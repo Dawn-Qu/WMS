@@ -26,14 +26,17 @@ public class MainFrame extends BaseFrame{
 	
 	private PurchaseFrame purchaseFrame;
 	private GoodsFrame goodsFrame;
+	private warehouseFrame warehouseFrame;
+	private DeliveryFrame deliveryFrame;
+	private TransferFrame transferFrame;
 
 	private JMenuBar menuBar;
 
 	private JMenu transferMenu, deliveryMenu, searchMenu, purchaseMenu ,manegementMenu;
 
 	private JMenuItem menuItem;
-	private JMenuItem menuItem_1;
-	private JMenuItem menuItem_2;
+	private JMenuItem transferMenuItem;
+	private JMenuItem deliveryMenuItem;
 	private JMenuItem menuItem_3;
 	private JMenu goodsManegementMenu;
 	private JMenu warehouseManegementMenu;
@@ -80,14 +83,24 @@ public class MainFrame extends BaseFrame{
 		transferMenu = new JMenu("\u7269\u8D44\u6D41\u901A");
 		menuBar.add(transferMenu);
 		
-		menuItem_1 = new JMenuItem("\u7269\u8D44\u6D41\u901A");
-		transferMenu.add(menuItem_1);
+		transferMenuItem = new JMenuItem("\u7269\u8D44\u6D41\u901A");
+		transferMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				transferMenuItemActionPerformed();
+			}
+		});
+		transferMenu.add(transferMenuItem);
 		
 		deliveryMenu = new JMenu("\u51FA\u5E93");
 		menuBar.add(deliveryMenu);
 		
-		menuItem_2 = new JMenuItem("\u51FA\u5E93");
-		deliveryMenu.add(menuItem_2);
+		deliveryMenuItem = new JMenuItem("\u51FA\u5E93");
+		deliveryMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				deliveryMenuItemActionPerformed();
+			}
+		});
+		deliveryMenu.add(deliveryMenuItem);
 		
 		searchMenu = new JMenu("\u67E5\u8BE2");
 		menuBar.add(searchMenu);
@@ -98,7 +111,7 @@ public class MainFrame extends BaseFrame{
 		purchaseMenu = new JMenu("\u91C7\u8D2D");
 		menuBar.add(purchaseMenu);
 		
-		manegementMenu = new JMenu("����");
+		manegementMenu = new JMenu("管理");
 		menuBar.add(manegementMenu);
 		
 		goodsManegementMenu = new JMenu("\u7269\u8D44\u7BA1\u7406");
@@ -116,9 +129,19 @@ public class MainFrame extends BaseFrame{
 		manegementMenu.add(warehouseManegementMenu);
 		
 		insertWarehouseMenuItem = new JMenuItem("\u6DFB\u52A0\u4ED3\u5E93");
+		insertWarehouseMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				insertWarehouseMenuItemActionPerformed();
+			}
+		});
 		warehouseManegementMenu.add(insertWarehouseMenuItem);
 		
 		deleteWarehhouseMenuItem = new JMenuItem("\u5220\u9664\u4ED3\u5E93");
+		deleteWarehhouseMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				deleteWarehhouseMenuItemActionPerformed();
+			}
+		});
 		warehouseManegementMenu.add(deleteWarehhouseMenuItem);
 		
 		menuItem = new JMenuItem("\u91C7\u8D2D");
@@ -132,6 +155,41 @@ public class MainFrame extends BaseFrame{
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 	}
 	
+	protected void transferMenuItemActionPerformed() {
+		// TODO Auto-generated method stub
+		if(transferFrame == null) {
+			transferFrame = new TransferFrame();
+		}
+		transferFrame.setVisible(true);
+		
+	}
+
+	protected void deliveryMenuItemActionPerformed() {
+		// TODO Auto-generated method stub
+		if(deliveryFrame == null) {
+			deliveryFrame = new DeliveryFrame();
+		}
+		deliveryFrame.setVisible(true);
+	}
+
+	protected void deleteWarehhouseMenuItemActionPerformed() {
+		// TODO Auto-generated method stub
+		if(warehouseFrame == null) {
+			warehouseFrame = new warehouseFrame();
+		}
+		warehouseFrame.setTabSeq(1);
+		warehouseFrame.setVisible(true);
+	}
+
+	protected void insertWarehouseMenuItemActionPerformed() {
+		// TODO Auto-generated method stub
+		if(warehouseFrame == null) {
+			warehouseFrame = new warehouseFrame();
+		}
+		warehouseFrame.setTabSeq(0);
+		warehouseFrame.setVisible(true);
+	}
+
 	protected void insertGoodsMenuItemActionPerformed() {
 		// TODO Auto-generated method stub
 		if(goodsFrame == null) {

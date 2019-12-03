@@ -43,19 +43,19 @@ public class OneRecordFrame extends BaseFrame{
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(null);
 		
-		JLabel goodsLabel = new JLabel("\u7269\u54C1\u540D");
+		JLabel goodsLabel = new JLabel("物资名");
 		goodsLabel.setBounds(14, 13, 72, 18);
 		getContentPane().add(goodsLabel);
 		
-		JLabel numberLabel = new JLabel("\u6570\u91CF");
+		JLabel numberLabel = new JLabel("数量");
 		numberLabel.setBounds(14, 44, 72, 18);
 		getContentPane().add(numberLabel);
 		
-		JLabel srcWarehouseLabel = new JLabel("��Դ�ֿ��");
+		JLabel srcWarehouseLabel = new JLabel("来源仓库号");
 		srcWarehouseLabel.setBounds(14, 75, 72, 18);
 		getContentPane().add(srcWarehouseLabel);
 		
-		JLabel destWarehouseLabel = new JLabel("Ŀ�Ĳֿ��");
+		JLabel destWarehouseLabel = new JLabel("目的仓库号");
 		destWarehouseLabel.setBounds(14, 106, 72, 18);
 		getContentPane().add(destWarehouseLabel);
 		

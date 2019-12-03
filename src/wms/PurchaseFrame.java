@@ -36,6 +36,6 @@ public class PurchaseFrame extends RecordFrame{
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-
+		setTitle("采购");
 	}
 }

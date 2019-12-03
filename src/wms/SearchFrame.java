@@ -3,8 +3,10 @@ package wms;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
-public class TransferFrame extends RecordFrame{
+public class SearchFrame extends BaseFrame{
+
 
 	/**
 	 * Launch the application.
@@ -13,7 +15,7 @@ public class TransferFrame extends RecordFrame{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TransferFrame window = new TransferFrame();
+					SearchFrame window = new SearchFrame();
 					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -25,7 +27,9 @@ public class TransferFrame extends RecordFrame{
 	/**
 	 * Create the application.
 	 */
-	public TransferFrame() {
+	public SearchFrame() {
+		setTitle("查询");
+		getContentPane().setLayout(null);
 		initialize();
 	}
 
@@ -33,7 +37,7 @@ public class TransferFrame extends RecordFrame{
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		setTitle("物资调转");
+		setBounds(100, 100, 450, 300);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-
 }

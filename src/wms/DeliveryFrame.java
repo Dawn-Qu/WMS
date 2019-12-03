@@ -33,7 +33,7 @@ public class DeliveryFrame extends RecordFrame{
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-
+		setTitle("出库");
 	}
 
 }

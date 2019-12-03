@@ -44,6 +44,10 @@ public class warehouseFrame extends BaseFrame{
 	public warehouseFrame() {
 		initialize();
 	}
+	
+	public void setTabSeq(int index){
+		tabbedPane.setSelectedIndex(index);
+	}
 
 	/**
 	 * Initialize the contents of the 
@@ -113,7 +117,9 @@ public class warehouseFrame extends BaseFrame{
 			}
 		});
 		
-		deleteTable = new JTable();
+        Object[][] tableDate=new Object[0][4];
+        String[] name={"物资名","数量","来源仓库号","目的仓库号"};
+		deleteTable = new JTable(tableDate,name);
 		deleteTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		deleteTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		
@@ -137,5 +143,13 @@ public class warehouseFrame extends BaseFrame{
 	protected void insertButtonActionPerformed() {
 		// TODO Auto-generated method stub
 		this.dispose();
+	}
+	
+	private void updateDeleteInfoTotable() {
+		try {
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
