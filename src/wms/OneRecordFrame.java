@@ -7,32 +7,32 @@ import javax.swing.JComboBox;
 import javax.swing.JTextPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class OneRecordFrame extends BaseFrame{
 
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					OneRecordFrame window = new OneRecordFrame();
-					window.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private JTextPane numberTextPane;
+	private JTextPane goodsTextPane;
+	private JTextPane destWarehouseTextPane;
+	private JTextPane srcWarehouseTextPane;
+
+	private List<JTextPane> textPanes;
+	
+	RecordFrame recordFrame;
 
 	/**
 	 * Create the application.
 	 */
-	public OneRecordFrame() {
+	public OneRecordFrame(RecordFrame recordFrame) {
+		this.recordFrame = recordFrame;
 		initialize();
+		textPanes = 
+				new ArrayList<JTextPane>(
+						Arrays.asList(numberTextPane,goodsTextPane,srcWarehouseTextPane,destWarehouseTextPane));
 	}
 
 	/**
@@ -59,23 +59,23 @@ public class OneRecordFrame extends BaseFrame{
 		destWarehouseLabel.setBounds(14, 106, 72, 18);
 		getContentPane().add(destWarehouseLabel);
 		
-		JTextPane srcWarehouseTextPane = new JTextPane();
+		srcWarehouseTextPane = new JTextPane();
 		srcWarehouseTextPane.setBounds(100, 75, 37, 18);
 		getContentPane().add(srcWarehouseTextPane);
 		
-		JTextPane destWarehouseTextPane = new JTextPane();
+		destWarehouseTextPane = new JTextPane();
 		destWarehouseTextPane.setBounds(100, 106, 37, 18);
 		getContentPane().add(destWarehouseTextPane);
 		
-		JTextPane numberTextPane = new JTextPane();
+		numberTextPane = new JTextPane();
 		numberTextPane.setBounds(100, 44, 37, 18);
 		getContentPane().add(numberTextPane);
 		
-		JTextPane goodsTextPane = new JTextPane();
+		goodsTextPane = new JTextPane();
 		goodsTextPane.setBounds(100, 13, 37, 18);
 		getContentPane().add(goodsTextPane);
 		
-		JButton cancelButton = new JButton("ȡ��");
+		JButton cancelButton = new JButton("取消");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cancelButtonActionPerformed();
@@ -84,7 +84,7 @@ public class OneRecordFrame extends BaseFrame{
 		cancelButton.setBounds(100, 193, 63, 27);
 		getContentPane().add(cancelButton);
 		
-		JButton submissionButton = new JButton("ȷ��");
+		JButton submissionButton = new JButton("确定");
 		submissionButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				submissionButtonActionPerformed();
@@ -93,14 +93,31 @@ public class OneRecordFrame extends BaseFrame{
 		submissionButton.setBounds(240, 193, 63, 27);
 		getContentPane().add(submissionButton);
 		
+
+		
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 	}
 	
 	private void submissionButtonActionPerformed() {
-		this.dispose();
+		recordFrame.insert(getRecord());
+		clear();
 	}
 	
 	private void cancelButtonActionPerformed() {
 		this.dispose();
+	}
+	
+	private Record getRecord() {
+		String name = goodsTextPane.getText();
+			int amount = Integer.parseInt(numberTextPane.getText());
+			int src = Integer.parseInt(srcWarehouseTextPane.getText());
+			int dest = Integer.parseInt(destWarehouseTextPane.getText());
+		return new Record(name, amount, src, dest);
+	}
+	
+	private void clear() {
+		for(JTextPane textPane : textPanes) {
+			textPane.setText("");
+		}
 	}
 }

@@ -11,28 +11,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
-public class RecordFrame extends BaseFrame{
+public abstract class RecordFrame extends BaseFrame{
 
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					RecordFrame window = new RecordFrame();
-					window.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	private JTable recordTable;
-	private OneRecordFrame oneRecordFrame = new OneRecordFrame();
+	protected JTable recordTable;
+	private OneRecordFrame oneRecordFrame = new OneRecordFrame(this);
+	protected TableDataManegment tableDataManegment;
+	private String[] tableNames;
 
 	/**
 	 * Create the application.
@@ -51,9 +38,9 @@ public class RecordFrame extends BaseFrame{
 		
         Container contentPane=getContentPane();
         
-        Object[][] tableDate=new Object[0][4];
-        String[] name={"物资名","数量","来源仓库号","目的仓库号"};
-        recordTable=new JTable(tableDate,name);
+        tableDataManegment = new TableDataManegment(5, 4);
+        tableNames = new String[] {"物资名","数量","来源仓库号","目的仓库号"};
+        recordTable=new JTable(tableDataManegment.tableData,tableNames);
         contentPane.add(new JScrollPane(recordTable));
         
         JPanel buttonPanel=new JPanel();
@@ -102,7 +89,33 @@ public class RecordFrame extends BaseFrame{
 		this.dispose();
 	}
 	
-	private void submissionButtonaActionPerformed() {
-		this.dispose();
+	protected abstract void submissionButtonaActionPerformed();
+	
+	public void insert(Record record) {
+		tableDataManegment.addRow(record.toStringArray());
+		updateTable();
+	}
+	
+	private void updateTable() {
+		recordTable.setModel(new DefaultTableModel(tableDataManegment.tableData,tableNames));
+	}
+
+}
+
+class TableDataManegment{
+	String[][] tableData;
+	int i=0,j=0;
+	
+	public TableDataManegment(int r,int c) {
+		// TODO Auto-generated constructor stub
+		tableData = new String[r][c];
+	}
+	
+	public void addRow(String ... params) {
+		for(String param : params) {
+			tableData[i][j++] = param;
+		}
+		i++;
+		j=0;
 	}
 }

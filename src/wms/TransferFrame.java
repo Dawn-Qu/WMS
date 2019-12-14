@@ -36,4 +36,10 @@ public class TransferFrame extends RecordFrame{
 		setTitle("物资调转");
 	}
 
+	@Override
+	protected void submissionButtonaActionPerformed() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

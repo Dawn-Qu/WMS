@@ -36,4 +36,10 @@ public class DeliveryFrame extends RecordFrame{
 		setTitle("出库");
 	}
 
+	@Override
+	protected void submissionButtonaActionPerformed() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
