@@ -29,6 +29,7 @@ public class MainFrame extends BaseFrame{
 	private warehouseFrame warehouseFrame;
 	private DeliveryFrame deliveryFrame;
 	private TransferFrame transferFrame;
+	private SearchFrame searchFrame;
 
 	private JMenuBar menuBar;
 
@@ -37,7 +38,7 @@ public class MainFrame extends BaseFrame{
 	private JMenuItem menuItem;
 	private JMenuItem transferMenuItem;
 	private JMenuItem deliveryMenuItem;
-	private JMenuItem menuItem_3;
+	private JMenuItem warehouseSearchMenuItem;
 	private JMenu goodsManegementMenu;
 	private JMenu warehouseManegementMenu;
 	private JMenuItem insertWarehouseMenuItem;
@@ -105,8 +106,29 @@ public class MainFrame extends BaseFrame{
 		searchMenu = new JMenu("\u67E5\u8BE2");
 		menuBar.add(searchMenu);
 		
-		menuItem_3 = new JMenuItem("\u67E5\u8BE2");
-		searchMenu.add(menuItem_3);
+		warehouseSearchMenuItem = new JMenuItem("仓库查询");
+		warehouseSearchMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				warehouseSearchMenuItemActionPerformed();
+			}
+		});
+		searchMenu.add(warehouseSearchMenuItem);
+		
+		JMenuItem goodsSearchMenuItem = new JMenuItem("物资查询");
+		goodsSearchMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				goodsSearchMenuItemActionPerformed();
+			}
+		});
+		searchMenu.add(goodsSearchMenuItem);
+		
+		JMenuItem recordSearchMenuItem = new JMenuItem("记录单查询");
+		recordSearchMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				recordSearchMenuItemActionPerformed();
+			}
+		});
+		searchMenu.add(recordSearchMenuItem);
 		
 		purchaseMenu = new JMenu("\u91C7\u8D2D");
 		menuBar.add(purchaseMenu);
@@ -155,6 +177,33 @@ public class MainFrame extends BaseFrame{
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 	}
 	
+	protected void recordSearchMenuItemActionPerformed() {
+		// TODO Auto-generated method stub
+		if(searchFrame == null) {
+			searchFrame = new SearchFrame();
+		}
+		searchFrame.setTabSeq(2);
+		searchFrame.setVisible(true);
+	}
+
+	protected void goodsSearchMenuItemActionPerformed() {
+		// TODO Auto-generated method stub
+		if(searchFrame == null) {
+			searchFrame = new SearchFrame();
+		}
+		searchFrame.setTabSeq(1);
+		searchFrame.setVisible(true);
+	}
+
+	protected void warehouseSearchMenuItemActionPerformed() {
+		// TODO Auto-generated method stub
+		if(searchFrame == null) {
+			searchFrame = new SearchFrame();
+		}
+		searchFrame.setTabSeq(0);
+		searchFrame.setVisible(true);
+	}
+
 	protected void transferMenuItemActionPerformed() {
 		// TODO Auto-generated method stub
 		if(transferFrame == null) {
