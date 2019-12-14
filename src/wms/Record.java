@@ -19,4 +19,4 @@ public class Record {
 	public String[] toStringArray() {
 		return new String[] {goodsName,String.valueOf(amount),String.valueOf(srcWarehouseNumber),String.valueOf(destWarehouseNumber)};
 	}
-}
+
