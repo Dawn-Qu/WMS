@@ -27,7 +27,7 @@ public class DataProcessing {
 
     public static void purchase(String[] GNo, int[] amount, String destinyWNo, String DNo) throws CapacityException, GoodsNotFoundException, SQLException, Exception {
 
-        int sum = getSumCost();//总占量
+        int sum = getSumCost(GNo, amount);//总占量
 
         //检测容量
         PreparedStatement pstmt = connection.prepareStatement("SELECT ExcessCapacity FROM warehouse_capacity_view WHERE WNo=?");
@@ -135,7 +135,7 @@ public class DataProcessing {
 
     }
 
-    public static void transfer(String[] GNo, int[] amount, String sourceWNo,String destinyWNo) throws Exception,CapacityException, GoodsNotFoundException,StorageException {
+    public static void transfer(String[] GNo, int[] amount, String sourceWNo,String destinyWNo,String ANo) throws Exception,CapacityException, GoodsNotFoundException,StorageException {
         int sum = getSumCost(GNo, amount);
         PreparedStatement pstmt = connection.prepareStatement("SELECT ExcessCapacity FROM warehouse_capacity_view WHERE WNo=?;");
         pstmt.setString(1, destinyWNo);
@@ -165,15 +165,17 @@ public class DataProcessing {
             }
         }
         //将物资从来源仓库中调转至目的仓库中
+        String newRNo=getNewRNo();
         for(int i=0;i<GNo.length;++i){
             //若数量正好相同，则直接改仓库号；
             //若不同，则减去相应的数量，然后插入（原本没有）或更新加上相应数量
-            PreparedStatement amountQuery=connection.prepareStatement("SELECT GNo FROM stock_view WHERE GNo=? AND WNo=?");
+            PreparedStatement amountQuery=connection.prepareStatement
+                    ("SELECT Amount FROM stock_view WHERE GNo=? AND WNo=?");
             amountQuery.setString(1,GNo[i]);
             amountQuery.setString(2,sourceWNo);
             ResultSet amountSet=amountQuery.executeQuery();
             if(amountSet.next()){
-                int amountTmp=amountSet.getInt("GNo");
+                int amountTmp=amountSet.getInt("Amount");
                 //改仓库号
                 if(amountTmp==amount[i]){
                     PreparedStatement pst=connection.
@@ -217,7 +219,33 @@ public class DataProcessing {
                         update.executeUpdate();
                     }
                 }
-
+                //库存信息更新完毕，下面开始更新记录
+                //record只需更新一次，recorddetail需要更新多次，transferinfo需要更新多次
+                if(i==0) {
+                    PreparedStatement record = connection.prepareStatement
+                            ("INSERT INTO record (RNo,RUsage,Rtime) VALUES(?,?,?);");
+                    record.setString(1, newRNo);
+                    record.setString(2, "rearrange");
+                    record.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+                    record.execute();
+                }
+                //recorddetail更新
+                PreparedStatement recorddetail=connection.prepareStatement
+                        ("INSERT INTO recorddetail (RNo,GNo,SourceWNo,Amount) " +
+                                "VALUES(?,?,?,?);");
+                recorddetail.setString(1,newRNo);
+                recorddetail.setString(2,GNo[i]);
+                recorddetail.setString(3,sourceWNo);
+                recorddetail.setInt(4,amount[i]);
+                //transferinfo更新
+                PreparedStatement transferinfo=connection.prepareStatement
+                        ("INSERT INTO transferinfo (RNo,GNo,ANo,DestWNo)" +
+                                "VALUES (?,?,?,?);");
+                transferinfo.setString(1,newRNo);
+                transferinfo.setString(2,GNo[i]);
+                transferinfo.setString(3,ANo);
+                transferinfo.setString(4,destinyWNo);
+                transferinfo.execute();
             }
         }
 
