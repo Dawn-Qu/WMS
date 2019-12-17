@@ -8,7 +8,12 @@ public class TransferView {
     private char[]GName=new char[15];
     private char[]SourceWNo=new char[3];
     private char[]DestWNo=new char[3];
+    private int Amount=0;
     private Timestamp RTime;
+
+    public void setAmount(int amount) {
+        Amount = amount;
+    }
 
     public char[] getGName() {
         return GName;
@@ -58,4 +63,7 @@ public class TransferView {
         DestWNo = destWNo;
     }
 
+    public int getAmount() {
+        return Amount;
+    }
 }
