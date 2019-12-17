@@ -181,8 +181,9 @@ public class DataProcessing {
                     PreparedStatement pst=connection.
                             prepareStatement("UPDATE stock SET WNo=? WHERE WNo=? AND GNo=?");
                     pst.setString(1,destinyWNo);
-                    pst.setString(2,destinyWNo);
+                    pst.setString(2,sourceWNo);
                     pst.setString(3,GNo[i]);
+                    pst.executeUpdate();
                 }
                 else {
                     //减去相应的数量
@@ -237,6 +238,7 @@ public class DataProcessing {
                 recorddetail.setString(2,GNo[i]);
                 recorddetail.setString(3,sourceWNo);
                 recorddetail.setInt(4,amount[i]);
+                recorddetail.execute();
                 //transferinfo更新
                 PreparedStatement transferinfo=connection.prepareStatement
                         ("INSERT INTO transferinfo (RNo,GNo,ANo,DestWNo)" +
