@@ -6,6 +6,7 @@ import exception.GoodsNotFoundException;
 import exception.NameOrPasswordException;
 import exception.StorageException;
 import model.RecordDetail;
+import sun.security.util.Password;
 
 import java.sql.*;
 
@@ -70,9 +71,10 @@ public class DataProcessing {
                 }
                 //更新记录
                 String newRNo = getNewRNo();
-                PreparedStatement insertPurchase = connection.prepareStatement("INSERT INTO purchaseinfo(RNo,DNo) VALUES(?,?);");
+                PreparedStatement insertPurchase = connection.prepareStatement("INSERT INTO purchaseinfo(RNo,DNo,DestWNo) VALUES(?,?);");
                 insertPurchase.setString(1, newRNo);
                 insertPurchase.setString(2, DNo);
+                insertPurchase.setString(3,destinyWNo);
                 insertPurchase.execute();
 
                 PreparedStatement insertRecord = connection.prepareStatement("INSERT INTO record(RNo,RUsage,Rtime) VALUES(?,?,?);");
@@ -116,9 +118,10 @@ public class DataProcessing {
             }
             //更新记录
             String newRNo = getNewRNo();
-            PreparedStatement insertPurchase = connection.prepareStatement("INSERT INTO purchaseinfo(RNo,DNo) VALUES(?,?);");
+            PreparedStatement insertPurchase = connection.prepareStatement("INSERT INTO purchaseinfo(RNo,DNo,DestWNo) VALUES(?,?);");
             insertPurchase.setString(1, newRNo);
             insertPurchase.setString(2, DNo);
+            insertPurchase.setString(3,destinyWNo);
             insertPurchase.execute();
 
             PreparedStatement insertRecord = connection.prepareStatement("INSERT INTO record(RNo,RUsage,Rtime) VALUES(?,?,?);");
@@ -349,6 +352,42 @@ public class DataProcessing {
         deliveryinfo.setString(1,newRNo);
         deliveryinfo.setString(2,clientNo);
         deliveryinfo.execute();
+    }
+
+    public static void addClient(String clientNo,String clientName)throws SQLException{
+        PreparedStatement insert=connection.prepareStatement
+                ("INSERT INTO client (ClientNo,ClientName) VALUES(?,?);");
+        insert.setString(1,clientNo);
+        insert.setString(2,clientName);
+        insert.execute();
+    }
+
+    public static void addAdministrator(String ANo,String password)throws SQLException{
+
+        PreparedStatement insert=connection.prepareStatement
+                ("INSERT INTO administrator (ANo,Password) VALUES(?,?);");
+        insert.setString(1,ANo);
+        insert.setString(2, password);
+        insert.execute();
+    }
+
+    public static void addDepartment(String DNo,String Dname)throws SQLException{
+
+        PreparedStatement insert=connection.prepareStatement
+                ("INSERT INTO department (DNo,Dname) VALUES(?,?);");
+        insert.setString(1,DNo);
+        insert.setString(2,Dname);
+        insert.execute();
+    }
+
+    public static void addWarehouse(String WNo,String WName,int capacity)throws SQLException{
+
+        PreparedStatement insert=connection.prepareStatement
+                ("INSERT INTO warehouse (WNo,WName,Capacity) VALUES(?,?,?);");
+        insert.setString(1,WNo);
+        insert.setString(2,WName);
+        insert.setInt(3,capacity);
+        insert.execute();
     }
 
     private static String getNewRNo() throws SQLException {
