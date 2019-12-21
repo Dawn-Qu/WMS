@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataProcessing {
-    public static final String URL = "jdbc:mysql://localhost:3306/warehouse_db?serverTimezone=GMT%2B8";
+    public static final String URL = "jdbc:mysql://111.229.228.57:3306/warehouse_db?serverTimezone=GMT%2B8";
     public static final String USER = "root";
-    public static final String PASSWORD = "";
+    public static final String PASSWORD = "root";
     public static Connection connection;
     public static final String USAGE_PURCHASE="purchase";
     public static final String USAGE_REARRANGE="rearrange";
@@ -22,7 +22,7 @@ public class DataProcessing {
     static {
         try {
             //1.加载驱动程序
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.jdbc.Driver");
             //2. 获得数据库连接
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (ClassNotFoundException e) {
@@ -280,11 +280,12 @@ public class DataProcessing {
         ResultSet set = statement.executeQuery("SELECT MAX(GNo) FROM goods;");
         if (set.next()) {
             String tmpGNo = set.getString(1);
+            if(tmpGNo==null) return "00000000";
             long number = Long.valueOf(tmpGNo);
             ++number;
             String newGNo = String.valueOf(number);
             char[] chars = new char[]{'0', '0', '0', '0', '0', '0', '0', '0'};
-            for (int i = 10 - newGNo.length(), j = 0; i < 8; ++i, ++j) {
+            for (int i = 8 - newGNo.length(), j = 0; i < 8; ++i, ++j) {
                 chars[i] = newGNo.charAt(j);
             }
             return String.valueOf(chars);
@@ -309,12 +310,12 @@ public class DataProcessing {
         insertRecordDetail.execute();
 
     }
-    private static List getRecordDetail(Timestamp Time,char[] Usage,char[]gNo,char[] cNo ,char[] sourceWNo ,char[] destWNo) throws SQLException
+    private static List getRecordDetail(Timestamp Time1,Timestamp Time2,char[] Usage,char[]gNo,char[] cNo ,char[] sourceWNo ,char[] destWNo) throws SQLException
     {
         Statement statement = connection.createStatement();
         //根据时间、gno\destwno\sourcewno\destwno查询物资调转记录
         if(Usage.equals("rearrange"))
-        { String str="select * from transfer_view where time between '2014-03-05 00:00:00' and '2014-03-25 23:58:36' and Rusage=Usage" +
+        { String str="select * from transfer_view where time (between Time1 and Time2) and Rusage=Usage" +
                 " and GNo=gNo  and SourceWNo=sourceWNo and   DestWNo=destWNo";
         ResultSet set = statement.executeQuery(str);
             List<TransferView> tfview=new ArrayList<>();
@@ -333,7 +334,7 @@ public class DataProcessing {
         }
         //根据时间、gno\clientno\sourcewno查找出售记录单
         else if(Usage.equals("sell"))
-        { String str="select * from order_view where time between '2014-03-05 00:00:00' and '2014-03-25 23:58:36' and Rusage=Usage" +
+        { String str="select * from order_view where time  (between Time1 and Time2) and Rusage=Usage" +
                 " and GNo=gNo and ClientNo=cNo ";
             ResultSet set = statement.executeQuery(str);
             List<OrderView> orderview=new ArrayList<>();
@@ -353,7 +354,7 @@ public class DataProcessing {
         //根据gno\time查采购记录
         else if(Usage.equals("purchase"))
         {
-            String str="select * from purchase_view where time between '2014-03-05 00:00:00' and '2014-03-25 23:58:36' and Rusage=Usage" +
+            String str="select * from purchase_view where time (between Time1 and Time2) and Rusage=Usage" +
                     " and GNo=gNo ";
             ResultSet set = statement.executeQuery(str);
             List<PurchaseView> pview=new ArrayList<>();
@@ -393,7 +394,8 @@ public class DataProcessing {
         }
         return sum;
     }
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception, NameRepeatException {
+        addGoods("brush",1,3);
     }
 }
 
