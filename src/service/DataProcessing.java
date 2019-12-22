@@ -1,14 +1,17 @@
 package service;
 
-import com.sun.org.glassfish.gmbal.GmbalMBeanNOPImpl;
+import exception.*;
+import view.*;
+
 import exception.CapacityException;
 import exception.GoodsNotFoundException;
 import exception.NameOrPasswordException;
 import exception.StorageException;
 import model.RecordDetail;
-import sun.security.util.Password;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataProcessing {
     public static final String URL = "jdbc:mysql://localhost:3306/warehouse_db?serverTimezone=GMT%2B8";
@@ -410,7 +413,159 @@ public class DataProcessing {
             return "0000000000";
         }
     }
+    private static String getNewGNo() throws SQLException {
+        Statement statement = connection.createStatement();
+        ResultSet set = statement.executeQuery("SELECT MAX(GNo) FROM goods;");
+        if (set.next()) {
+            String tmpGNo = set.getString(1);
+            if(tmpGNo==null) return "00000000";
+            long number = Long.valueOf(tmpGNo);
+            ++number;
+            String newGNo = String.valueOf(number);
+            char[] chars = new char[]{'0', '0', '0', '0', '0', '0', '0', '0'};
+            for (int i = 8 - newGNo.length(), j = 0; i < 8; ++i, ++j) {
+                chars[i] = newGNo.charAt(j);
+            }
+            return String.valueOf(chars);
+        } else {
+            return "00000000";
+        }
+    }
+    public static void addGoods(String name,int cost,int price) throws Exception, NameRepeatException {
+        Statement statement = connection.createStatement();
+        ResultSet set = statement.executeQuery("SELECT Gname FROM goods;");
+        while(set.next()){
+            String tmpGName = set.getString(1);
+            if(tmpGName.equals(name))
+                throw new NameRepeatException("物资名与仓库中已有物资重复");
+        }
+        PreparedStatement insertRecordDetail =
+                connection.prepareStatement("INSERT INTO goods(GNo,GName,Cost,Price) VALUES(?,?,?,?)");
+        insertRecordDetail.setString(1, getNewGNo());
+        insertRecordDetail.setString(2, name);
+        insertRecordDetail.setInt(3,cost);
+        insertRecordDetail.setInt(4, price);
+        insertRecordDetail.execute();
 
+    }
+    public static List getRecordDetail(Timestamp Time1,Timestamp Time2,char[] Usage,char[]gNo,char[] cNo ,char[] sourceWNo ,char[] destWNo) throws SQLException
+    {
+        Statement statement = connection.createStatement();
+        //根据时间、gno\destwno\sourcewno\destwno查询物资调转记录
+        if(Usage.equals("rearrange"))
+        { String str="select * from transfer_view where time (between Time1 and Time2) and Rusage=Usage" +
+                " and GNo=gNo  and SourceWNo=sourceWNo and   DestWNo=destWNo odered by RTime";
+        ResultSet set = statement.executeQuery(str);
+            List<TransferView> tfview=new ArrayList<>();
+           TransferView t=null;
+            while(set.next()){
+                t=new TransferView();
+                t.setDestWNo(set.getString("DestWNo").toCharArray());
+                t.setGNo(set.getString("GNo").toCharArray());
+                t.setRNo(set.getString("RNo").toCharArray());
+                t.setRTime(set.getTimestamp("RTime"));
+                t.setSourceWNo(set.getString("SourceWNo").toCharArray());
+                t.setAmount(set.getInt("Amount"));
+                tfview.add(t);
+            }
+            return  tfview;
+        }
+        //根据时间、gno\clientno\sourcewno查找出售记录单
+        else if(Usage.equals("sell"))
+        { String str="select * from order_view where time  (between Time1 and Time2) and Rusage=Usage" +
+                " and GNo=gNo and ClientNo=cNo  odered by RTime";
+            ResultSet set = statement.executeQuery(str);
+            List<OrderView> orderview=new ArrayList<>();
+            OrderView t=null;
+            while(set.next()){
+                t=new OrderView();
+                t.setClientNo(set.getString("ClientNo").toCharArray());
+                t.setClientName(set.getString("ClientName").toCharArray());
+                t.setRNo(set.getString("RNo").toCharArray());
+                t.setRtime(set.getTimestamp("RTime"));
+                t.setSourceWNo(set.getString("SourceWNo").toCharArray());
+                t.setAmount(set.getInt("Amount"));
+                orderview.add(t);
+            }
+            return  orderview;
+        }
+        //根据gno\time查采购记录
+        else if(Usage.equals("purchase"))
+        {
+            String str="select * from purchase_view where time (between Time1 and Time2) and Rusage=Usage" +
+                    " and GNo=gNo odered by RTime";
+            ResultSet set = statement.executeQuery(str);
+            List<PurchaseView> pview=new ArrayList<>();
+            PurchaseView t=null;
+            while(set.next()){
+                t=new PurchaseView();
+                t.setGName(set.getString("GName").toCharArray());
+                t.setGNo(set.getString("GNo").toCharArray());
+                t.setRNo(set.getString("RNo").toCharArray());
+                t.setRTime(set.getTimestamp("RTime"));
+                t.setSourceWNo(set.getString("SourceWNo").toCharArray());
+                t.setAmount(set.getInt("Amount"));
+                pview.add(t);
+            }
+            return  pview;
+        }
+        else {
+            new RecordNotFoundException("没有找到对应的记录");
+            return null;
+        }
+    }
+    public static List<WarehouseCapacityView> getWarehouseCapacityView(char[] name,char[] num) throws SQLException {
+        Statement statement = connection.createStatement();
+        String str="select * from warehouse_capacity_view where WNo=num and WName=name";
+        ResultSet set = statement.executeQuery(str);
+        List<WarehouseCapacityView> warecapview=new ArrayList<>();
+        WarehouseCapacityView wcp=null;
+        while(set.next()){
+            wcp=new WarehouseCapacityView();
+            wcp.setWNo(set.getString("WNo").toCharArray());
+            wcp.setWName(set.getString("WName").toCharArray());
+            wcp.setCapacity(set.getInt("Capacity"));
+            wcp.setExcessCapacity(set.getInt("ExcessCapacity"));
+            warecapview.add(wcp);
+        }
+        return warecapview;
+
+    }
+    public static List<WarehouseCapacityView> getAllWarehouseCapacityView() throws SQLException {
+        Statement statement = connection.createStatement();
+        String str="select * from warehouse_capacity_view ordered by WNo";
+        ResultSet set = statement.executeQuery(str);
+        List<WarehouseCapacityView> warecapview=new ArrayList<>();
+        WarehouseCapacityView wcp=null;
+        while(set.next()){
+            wcp=new WarehouseCapacityView();
+            wcp.setWNo(set.getString("WNo").toCharArray());
+            wcp.setWName(set.getString("WName").toCharArray());
+            wcp.setCapacity(set.getInt("Capacity"));
+            wcp.setExcessCapacity(set.getInt("ExcessCapacity"));
+            warecapview.add(wcp);
+        }
+        return warecapview;
+
+    }
+    public static List<StockView> getStockView(String GoodsNo,String WareNo) throws SQLException {
+        Statement statement = connection.createStatement();
+        String str="select * from stock_view where GNo=GoodsNo and WNo=WareNo ordered by WNo";
+        ResultSet set = statement.executeQuery(str);
+        List<StockView> warecapview=new ArrayList<>();
+        StockView sw=null;
+        while(set.next()){
+            sw=new StockView();
+            sw.setWNo(set.getString("WNo").toCharArray());
+            sw.setWName(set.getString("WName").toCharArray());
+            sw.setGName(set.getString("GName").toCharArray());
+            sw.setGNo(set.getString("GNo").toCharArray());
+            sw.setAmount(set.getInt("Amount"));
+            warecapview.add(sw);
+        }
+        return warecapview;
+
+    }
     private static int getSumCost(String[] GNo,int[] amount)throws Exception{
         int sum = 0;//总占量
         if (GNo.length != amount.length) {
