@@ -3,50 +3,50 @@ package view;
 import java.util.Arrays;
 
 public class WarehouseCapacityView {
-    private char[]RNo=new char[10];
-    private char[]GNo=new char[8];
-    private char[]ANo=new char[6];
-    private char[]DestWNo=new char[3];
+    private char[] WNo=new char[3];
+    private char[] WName=new char[20];
+    private int Capacity;
+    private int ExcessCapacity;
 
-    public char[] getANo() {
-        return ANo;
+    public void setWName(char[] WName) {
+        this.WName = WName;
     }
 
-    public char[] getGNo() {
-        return GNo;
+    public void setWNo(char[] WNo) {
+        this.WNo = WNo;
     }
 
-    public char[] getRNo() {
-        return RNo;
+    public void setCapacity(int capacity) {
+        Capacity = capacity;
     }
 
-    public char[] getDestWNo() {
-        return DestWNo;
+    public void setExcessCapacity(int excessCapacity) {
+        ExcessCapacity = excessCapacity;
     }
 
-    public void setANo(char[] ANo) {
-        this.ANo = ANo;
+    public char[] getWName() {
+        return WName;
     }
 
-    public void setGNo(char[] GNo) {
-        this.GNo = GNo;
+    public char[] getWNo() {
+        return WNo;
     }
 
-    public void setRNo(char[] RNo) {
-        this.RNo = RNo;
+    public int getCapacity() {
+        return Capacity;
     }
 
-    public void setDestWNo(char[] destWNo) {
-        DestWNo = destWNo;
+    public int getExcessCapacity() {
+        return ExcessCapacity;
     }
 
     @Override
     public String toString() {
         return "WarehouseCapacityView{" +
-                "RNo=" + Arrays.toString(RNo) +
-                ", GNo=" + Arrays.toString(GNo) +
-                ", ANo=" + Arrays.toString(ANo) +
-                ", DestWNo=" + Arrays.toString(DestWNo) +
+                "WNo=" + Arrays.toString(WNo) +
+                ", WName=" + Arrays.toString(WName) +
+                ", Capacity=" + Capacity +
+                ", ExcessCapacity=" + ExcessCapacity +
                 '}';
     }
 }

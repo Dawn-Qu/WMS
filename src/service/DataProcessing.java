@@ -2,9 +2,7 @@ package service;
 
 import exception.*;
 import model.RecordDetail;
-import view.OrderView;
-import view.PurchaseView;
-import view.TransferView;
+import view.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -310,13 +308,13 @@ public class DataProcessing {
         insertRecordDetail.execute();
 
     }
-    private static List getRecordDetail(Timestamp Time1,Timestamp Time2,char[] Usage,char[]gNo,char[] cNo ,char[] sourceWNo ,char[] destWNo) throws SQLException
+    public static List getRecordDetail(Timestamp Time1,Timestamp Time2,char[] Usage,char[]gNo,char[] cNo ,char[] sourceWNo ,char[] destWNo) throws SQLException
     {
         Statement statement = connection.createStatement();
         //根据时间、gno\destwno\sourcewno\destwno查询物资调转记录
         if(Usage.equals("rearrange"))
         { String str="select * from transfer_view where time (between Time1 and Time2) and Rusage=Usage" +
-                " and GNo=gNo  and SourceWNo=sourceWNo and   DestWNo=destWNo";
+                " and GNo=gNo  and SourceWNo=sourceWNo and   DestWNo=destWNo odered by RTime";
         ResultSet set = statement.executeQuery(str);
             List<TransferView> tfview=new ArrayList<>();
            TransferView t=null;
@@ -335,7 +333,7 @@ public class DataProcessing {
         //根据时间、gno\clientno\sourcewno查找出售记录单
         else if(Usage.equals("sell"))
         { String str="select * from order_view where time  (between Time1 and Time2) and Rusage=Usage" +
-                " and GNo=gNo and ClientNo=cNo ";
+                " and GNo=gNo and ClientNo=cNo  odered by RTime";
             ResultSet set = statement.executeQuery(str);
             List<OrderView> orderview=new ArrayList<>();
             OrderView t=null;
@@ -355,7 +353,7 @@ public class DataProcessing {
         else if(Usage.equals("purchase"))
         {
             String str="select * from purchase_view where time (between Time1 and Time2) and Rusage=Usage" +
-                    " and GNo=gNo ";
+                    " and GNo=gNo odered by RTime";
             ResultSet set = statement.executeQuery(str);
             List<PurchaseView> pview=new ArrayList<>();
             PurchaseView t=null;
@@ -375,6 +373,58 @@ public class DataProcessing {
             new RecordNotFoundException("没有找到对应的记录");
             return null;
         }
+    }
+    public static List<WarehouseCapacityView> getWarehouseCapacityView(char[] name,char[] num) throws SQLException {
+        Statement statement = connection.createStatement();
+        String str="select * from warehouse_capacity_view where WNo=num and WName=name";
+        ResultSet set = statement.executeQuery(str);
+        List<WarehouseCapacityView> warecapview=new ArrayList<>();
+        WarehouseCapacityView wcp=null;
+        while(set.next()){
+            wcp=new WarehouseCapacityView();
+            wcp.setWNo(set.getString("WNo").toCharArray());
+            wcp.setWName(set.getString("WName").toCharArray());
+            wcp.setCapacity(set.getInt("Capacity"));
+            wcp.setExcessCapacity(set.getInt("ExcessCapacity"));
+            warecapview.add(wcp);
+        }
+        return warecapview;
+
+    }
+    public static List<WarehouseCapacityView> getAllWarehouseCapacityView() throws SQLException {
+        Statement statement = connection.createStatement();
+        String str="select * from warehouse_capacity_view ordered by WNo";
+        ResultSet set = statement.executeQuery(str);
+        List<WarehouseCapacityView> warecapview=new ArrayList<>();
+        WarehouseCapacityView wcp=null;
+        while(set.next()){
+            wcp=new WarehouseCapacityView();
+            wcp.setWNo(set.getString("WNo").toCharArray());
+            wcp.setWName(set.getString("WName").toCharArray());
+            wcp.setCapacity(set.getInt("Capacity"));
+            wcp.setExcessCapacity(set.getInt("ExcessCapacity"));
+            warecapview.add(wcp);
+        }
+        return warecapview;
+
+    }
+    public static List<StockView> getStockView(String GoodsNo,String WareNo) throws SQLException {
+        Statement statement = connection.createStatement();
+        String str="select * from stock_view where GNo=GoodsNo and WNo=WareNo ordered by WNo";
+        ResultSet set = statement.executeQuery(str);
+        List<StockView> warecapview=new ArrayList<>();
+        StockView sw=null;
+        while(set.next()){
+            sw=new StockView();
+            sw.setWNo(set.getString("WNo").toCharArray());
+            sw.setWName(set.getString("WName").toCharArray());
+            sw.setGName(set.getString("GName").toCharArray());
+            sw.setGNo(set.getString("GNo").toCharArray());
+            sw.setAmount(set.getInt("Amount"));
+            warecapview.add(sw);
+        }
+        return warecapview;
+
     }
     private static int getSumCost(String[] GNo,int[] amount)throws Exception{
         int sum = 0;//总占量
