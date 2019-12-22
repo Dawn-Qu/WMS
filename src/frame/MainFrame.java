@@ -20,7 +20,10 @@ public class MainFrame extends BaseFrame{
 	private DeliveryFrame deliveryFrame;
 	private TransferFrame transferFrame;
 	private SearchFrame searchFrame;
-
+	private AdminFrame adminFrame;
+	private ClientFrame clientFrame;
+	private DepartmentFrame departmentFrame;
+	
 	private JMenuBar menuBar;
 
 	private JMenu transferMenu, deliveryMenu, searchMenu, purchaseMenu ,manegementMenu;
@@ -156,6 +159,39 @@ public class MainFrame extends BaseFrame{
 		});
 		warehouseManegementMenu.add(deleteWarehhouseMenuItem);
 		
+		JMenu adminManegementMenu = new JMenu("管理员管理");
+		manegementMenu.add(adminManegementMenu);
+		
+		JMenuItem insertAdminMenuItem = new JMenuItem("添加管理员");
+		insertAdminMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				insertAdminMenuItemActionPerformed();
+			}
+		});
+		adminManegementMenu.add(insertAdminMenuItem);
+		
+		JMenu clientManegementMenu = new JMenu("客户管理");
+		manegementMenu.add(clientManegementMenu);
+		
+		JMenuItem insertClientMenuItem = new JMenuItem("添加客户");
+		insertClientMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				insertClientMenuItemActionPerformed();
+			}
+		});
+		clientManegementMenu.add(insertClientMenuItem);
+		
+		JMenu departmentManegementmenu = new JMenu("部门管理");
+		manegementMenu.add(departmentManegementmenu);
+		
+		JMenuItem insertDepartmentMenuItem = new JMenuItem("添加部门");
+		insertDepartmentMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				insertDepartmentMenuItemActionPerformed();
+			}
+		});
+		departmentManegementmenu.add(insertDepartmentMenuItem);
+		
 		menuItem = new JMenuItem("\u91C7\u8D2D");
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -167,6 +203,30 @@ public class MainFrame extends BaseFrame{
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 	}
 	
+	protected void insertDepartmentMenuItemActionPerformed() {
+		// TODO Auto-generated method stub
+		if(departmentFrame == null) {
+			departmentFrame = new DepartmentFrame();
+		}
+		departmentFrame.setVisible(true);
+	}
+
+	protected void insertClientMenuItemActionPerformed() {
+		// TODO Auto-generated method stub
+		if(clientFrame == null) {
+			clientFrame = new ClientFrame();
+		}
+		clientFrame.setVisible(true);
+	}
+
+	protected void insertAdminMenuItemActionPerformed() {
+		// TODO Auto-generated method stub
+		if(adminFrame == null) {
+			adminFrame = new AdminFrame();
+		}
+		adminFrame.setVisible(true);
+	}
+
 	protected void recordSearchMenuItemActionPerformed() {
 		// TODO Auto-generated method stub
 		if(searchFrame == null) {
