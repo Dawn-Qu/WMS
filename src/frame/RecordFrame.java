@@ -4,14 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
-
 import model.*;
 
 public abstract class RecordFrame extends BaseFrame{
@@ -23,9 +22,11 @@ public abstract class RecordFrame extends BaseFrame{
 	private static final long serialVersionUID = 5356266414968084407L;
 	protected JTable recordTable;
 	private OneRecordFrame oneRecordFrame = new OneRecordFrame(this);
-	protected TableDataManegment tableDataManegment;
+	protected RecordTableModel recordTableModel;
 	private String[] tableNames;
 
+	protected JButton personButton;
+	protected JPanel buttonPanel;
 	/**
 	 * Create the application.
 	 */
@@ -43,12 +44,12 @@ public abstract class RecordFrame extends BaseFrame{
 		
         Container contentPane=getContentPane();
         
-        tableDataManegment = new TableDataManegment(5, 4);
         tableNames = new String[] {"物资名","数量","来源仓库号","目的仓库号"};
-        recordTable=new JTable(tableDataManegment.tableData,tableNames);
+        recordTableModel = new RecordTableModel(Arrays.asList(tableNames));
+        recordTable=new JTable(recordTableModel);
         contentPane.add(new JScrollPane(recordTable));
         
-        JPanel buttonPanel=new JPanel();
+        buttonPanel = new JPanel();
         contentPane.add(buttonPanel,BorderLayout.SOUTH);
 		
         recordTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -97,30 +98,9 @@ public abstract class RecordFrame extends BaseFrame{
 	protected abstract void submissionButtonaActionPerformed();
 	
 	public void insert(Record record) {
-		tableDataManegment.addRow(record.toStringArray());
-		updateTable();
+		recordTableModel.addRow(record.flat());
 	}
 	
-	private void updateTable() {
-		recordTable.setModel(new DefaultTableModel(tableDataManegment.tableData,tableNames));
-	}
-
 }
 
-class TableDataManegment{
-	String[][] tableData;
-	int i=0,j=0;
-	
-	public TableDataManegment(int r,int c) {
-		// TODO Auto-generated constructor stub
-		tableData = new String[r][c];
-	}
-	
-	public void addRow(String ... params) {
-		for(String param : params) {
-			tableData[i][j++] = param;
-		}
-		i++;
-		j=0;
-	}
-}
+

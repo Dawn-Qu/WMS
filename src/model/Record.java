@@ -14,7 +14,7 @@ public class Record {
 		this.destWarehouseNumber = destWarehouseNumber;
 	}
 	
-	public String[] toStringArray() {
-		return new String[] {goodsName,String.valueOf(amount),String.valueOf(srcWarehouseNumber),String.valueOf(destWarehouseNumber)};
+	public Object[] flat() {
+		return new Object[] {goodsName,amount,srcWarehouseNumber,destWarehouseNumber};
 	}
 }

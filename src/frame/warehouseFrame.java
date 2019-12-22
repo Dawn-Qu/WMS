@@ -4,14 +4,19 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+
+import service.DataProcessing;
+
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class warehouseFrame extends BaseFrame{
@@ -21,6 +26,7 @@ public class warehouseFrame extends BaseFrame{
 	 */
 	private static final long serialVersionUID = 2118468043064503908L;
 	private JTextField nameTextField;
+	private JTextField numberTextField;
 	private JTextField volumeTextField;
 	private JTabbedPane tabbedPane;
 	private JTable deleteTable;
@@ -67,12 +73,17 @@ public class warehouseFrame extends BaseFrame{
 		JPanel insertPanel = new JPanel();
 		insertPanel.setLayout(null);
 		tabbedPane.add("添加仓库",insertPanel);
+		
 		JLabel nameLabel = new JLabel("仓库名");
 		nameLabel.setBounds(80, 25, 72, 18);
 		insertPanel.add(nameLabel);
 		
+		JLabel numberLabel = new JLabel("仓库号");
+		numberLabel.setBounds(80, 56, 72, 18);
+		insertPanel.add(numberLabel);
+		
 		JLabel volumeLabel = new JLabel("容量");
-		volumeLabel.setBounds(80, 56, 72, 18);
+		volumeLabel.setBounds(80, 87, 72, 18);
 		insertPanel.add(volumeLabel);
 		
 		
@@ -81,8 +92,13 @@ public class warehouseFrame extends BaseFrame{
 		insertPanel.add(nameTextField);
 		nameTextField.setColumns(10);
 		
+		numberTextField = new JTextField();
+		numberTextField.setBounds(161, 53, 86, 24);
+		insertPanel.add(numberTextField);
+		numberTextField.setColumns(10);
+		
 		volumeTextField = new JTextField();
-		volumeTextField.setBounds(161, 53, 86, 24);
+		volumeTextField.setBounds(161, 84, 86, 24);
 		insertPanel.add(volumeTextField);
 		volumeTextField.setColumns(10);
 		
@@ -108,7 +124,6 @@ public class warehouseFrame extends BaseFrame{
 		JPanel deletePanel = new JPanel();
 		tabbedPane.add("删除仓库",deletePanel);
 
-		tabbedPane.addTab("案宗删除", deletePanel);
 		deletePanel.setLayout(null);
 		
 		JButton deleteButton = new JButton("删除");
@@ -145,7 +160,17 @@ public class warehouseFrame extends BaseFrame{
 
 	protected void insertButtonActionPerformed() {
 		// TODO Auto-generated method stub
-		this.dispose();
+		int volume = Integer.parseInt(volumeTextField.getText());
+		String name = nameTextField.getText();
+		String number = numberTextField.getText();
+		try {
+			DataProcessing.addWarehouse(number, name, volume);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(this, e.getMessage(),"输入反馈",JOptionPane.YES_NO_OPTION);
+		}finally {
+			this.dispose();
+		}
 	}
 	
 	private void updateDeleteInfoTotable() {

@@ -4,9 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EventObject;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,6 +20,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
+
+import com.sun.tools.javac.code.Attribute.Array;
 
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -339,18 +344,18 @@ class RecordTableModel extends AbstractTableModel {
 	public RecordTableModel(List<String> columnNameList) {
 		// TODO Auto-generated constructor stub
 		this.columnNames = columnNameList.toArray(new String[] {});
-		this.data = new Object[][] {};
+		this.data = new ArrayList<>();
 	}
 
 	private String[] columnNames;
-	private Object[][] data;
+	private List<List<Object>> data;
 
 	public int getColumnCount() {
 		return columnNames.length;
 	}
 
 	public int getRowCount() {
-		return data.length;
+		return data.size();
 	}
 
 	public String getColumnName(int col) {
@@ -358,7 +363,7 @@ class RecordTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int col) {
-		return data[row][col];
+		return data.get(row).get(col);
 	}
 
 	/*
@@ -383,7 +388,14 @@ class RecordTableModel extends AbstractTableModel {
 	 * Don't need to implement this method unless your table's data can change.
 	 */
 	public void setValueAt(Object value, int row, int col) {
-		data[row][col] = value;
+		List<Object> list = data.get(row);
+		list.set(col, value);
 		fireTableCellUpdated(row, col);
+	}
+	
+	public void addRow(Object ... params) {
+		List<Object> list = new ArrayList<>(Arrays.asList(params));
+		data.add(list);
+		fireTableRowsInserted(getRowCount()-1, getRowCount()-1);
 	}
 }

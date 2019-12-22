@@ -1,13 +1,8 @@
 package service;
 
-import com.sun.org.glassfish.gmbal.GmbalMBeanNOPImpl;
 import exception.CapacityException;
 import exception.GoodsNotFoundException;
-import exception.NameOrPasswordException;
 import exception.StorageException;
-import model.RecordDetail;
-import sun.security.util.Password;
-
 import java.sql.*;
 
 public class DataProcessing {
