@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
 
 public class OneRecordFrame extends BaseFrame{
 
@@ -79,6 +80,8 @@ public class OneRecordFrame extends BaseFrame{
 		getContentPane().add(goodsTextPane);
 		
 		JButton cancelButton = new JButton("取消");
+		cancelButton.setVerticalAlignment(SwingConstants.TOP);
+		cancelButton.setIcon(null);
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cancelButtonActionPerformed();

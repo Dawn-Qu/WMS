@@ -3,6 +3,8 @@ package frame;
 import java.awt.EventQueue;
 import java.sql.SQLException;
 
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.table.TableModel;
 
 import exception.*;
@@ -61,13 +63,13 @@ public class PurchaseFrame extends RecordFrame{
 			DataProcessing.purchase(GNo, amount, "", DNo);
 		} catch (CapacityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(this.getContentPane(), e.getMessage(),"出错反馈",JOptionPane.YES_NO_OPTION);
 		} catch (GoodsNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(this.getContentPane(), e.getMessage(),"出错反馈",JOptionPane.YES_NO_OPTION);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(this.getContentPane(), e.getMessage(),"出错反馈",JOptionPane.YES_NO_OPTION);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -13,15 +13,14 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
-public class GoodsFrame extends BaseFrame{
+public class ClientFrame extends BaseFrame{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1433545671512674918L;
 	private JTextField nameTextField;
-	private JTextField volumeTextField;
-	private JTextField priceTextField;
+	private JTextField numberTextField;
 
 	/**
 	 * Launch the application.
@@ -30,7 +29,7 @@ public class GoodsFrame extends BaseFrame{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GoodsFrame window = new GoodsFrame();
+					ClientFrame window = new ClientFrame();
 					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -42,7 +41,7 @@ public class GoodsFrame extends BaseFrame{
 	/**
 	 * Create the application.
 	 */
-	public GoodsFrame() {
+	public ClientFrame() {
 		initialize();
 	}
 
@@ -50,37 +49,30 @@ public class GoodsFrame extends BaseFrame{
 	 * Initialize the contents of the 
 	 */
 	private void initialize() {
-		setTitle("\u6DFB\u52A0\u7269\u8D44");
+		setTitle("客户管理");
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(null);
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		
-		JLabel nameLabel = new JLabel("\u7269\u8D44\u540D");
+		JLabel nameLabel = new JLabel("客户名");
 		nameLabel.setBounds(80, 25, 72, 18);
 		getContentPane().add(nameLabel);
 		
-		JLabel volumeLabel = new JLabel("\u5360\u91CF");
-		volumeLabel.setBounds(80, 56, 72, 18);
-		getContentPane().add(volumeLabel);
+		JLabel numberLabel = new JLabel("客户号");
+		numberLabel.setBounds(80, 56, 72, 18);
+		getContentPane().add(numberLabel);
 		
-		JLabel priceLabel = new JLabel("\u51FA\u552E\u4EF7\u683C");
-		priceLabel.setBounds(80, 91, 72, 18);
-		getContentPane().add(priceLabel);
 		
 		nameTextField = new JTextField();
 		nameTextField.setBounds(161, 22, 86, 24);
 		getContentPane().add(nameTextField);
 		nameTextField.setColumns(10);
 		
-		volumeTextField = new JTextField();
-		volumeTextField.setBounds(161, 53, 86, 24);
-		getContentPane().add(volumeTextField);
-		volumeTextField.setColumns(10);
+		numberTextField = new JTextField();
+		numberTextField.setBounds(161, 53, 86, 24);
+		getContentPane().add(numberTextField);
+		numberTextField.setColumns(10);
 		
-		priceTextField = new JTextField();
-		priceTextField.setBounds(161, 88, 86, 24);
-		getContentPane().add(priceTextField);
-		priceTextField.setColumns(10);
 		
 		JButton insertButton = new JButton("\u6DFB\u52A0");
 		insertButton.addActionListener(new ActionListener() {
@@ -109,16 +101,14 @@ public class GoodsFrame extends BaseFrame{
 	protected void insertButtonActionPerformed() {
 		// TODO Auto-generated method stub
 		String name = nameTextField.getText();
-		String volume = volumeTextField.getText();
-		String price = priceTextField.getText();
-//		try {
-//			DataProcessing.add(number, name);
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			JOptionPane.showMessageDialog(this, e.getMessage(),"输入反馈",JOptionPane.YES_NO_OPTION);
-//		}finally {
-//			this.dispose();
-//		}
-		this.dispose();
+		String number = numberTextField.getText();
+		try {
+			DataProcessing.addClient(number, name);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(this, e.getMessage(),"输入反馈",JOptionPane.YES_NO_OPTION);
+		}finally {
+			this.dispose();
+		}
 	}
 }

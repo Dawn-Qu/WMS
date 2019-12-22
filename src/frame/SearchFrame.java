@@ -4,6 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EventObject;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -13,6 +19,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.AbstractTableModel;
+
+import com.sun.tools.javac.code.Attribute.Array;
+
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class SearchFrame extends BaseFrame{
 
@@ -49,8 +61,7 @@ public class SearchFrame extends BaseFrame{
 	private JTextField warehouseNumberInGoodsTextField;
 	private JTextField goodsNumberInRecordTextField;
 	private JTextField warehouseNumberInRecordTextField;
-	private JTextField timeInRecordTextField;
-	private JTextField usageInRecordTextField;
+	private JTextField timeSrcInRecordTextField,timeDestInRecordTextField;
 
 	/**
 	 * Create the application.
@@ -62,11 +73,12 @@ public class SearchFrame extends BaseFrame{
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initialize() {
 		setTitle("查询");
 		setBounds(100, 100, 449, 339);
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-		
+		 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
@@ -189,7 +201,7 @@ public class SearchFrame extends BaseFrame{
 		
 		JPanel inputpanel2 = new JPanel();
 		inputpanel2.setLayout(null);
-		inputpanel2.setBounds(14, 13, 375, 71);
+		inputpanel2.setBounds(14, 13, 410, 71);
 		recordSearchPanel.add(inputpanel2);
 		
 		JLabel reordNumberInRecordLabel = new JLabel("记录号");
@@ -220,30 +232,46 @@ public class SearchFrame extends BaseFrame{
 		
 		warehouseNumberInRecordTextField = new JTextField();
 		warehouseNumberInRecordTextField.setColumns(10);
-		warehouseNumberInRecordTextField.setBounds(181, 13, 50, 24);
+		warehouseNumberInRecordTextField.setBounds(181, 13, 61, 24);
 		inputpanel2.add(warehouseNumberInRecordTextField);
 		
 		JLabel timeInRecordLabel = new JLabel("时间");
 		timeInRecordLabel.setBounds(245, 16, 45, 18);
 		inputpanel2.add(timeInRecordLabel);
 		
-		timeInRecordTextField = new JTextField();
-		timeInRecordTextField.setColumns(10);
-		timeInRecordTextField.setBounds(278, 13, 50, 24);
-		inputpanel2.add(timeInRecordTextField);
+		timeSrcInRecordTextField = new JTextField("2019.7.28");
+		timeSrcInRecordTextField.setColumns(10);
+		timeSrcInRecordTextField.setBounds(270, 13, 60, 24);
+		inputpanel2.add(timeSrcInRecordTextField);
+		
+		JLabel arrowLabel = new JLabel("到");
+		arrowLabel.setBounds(330, 13, 20, 10);
+		inputpanel2.add(arrowLabel);
+		
+		timeDestInRecordTextField = new JTextField("2019.8.28");
+		timeDestInRecordTextField.setColumns(10);
+		timeDestInRecordTextField.setBounds(343, 13, 60, 24);
+		inputpanel2.add(timeDestInRecordTextField);
 		
 		JLabel usageInRecordLabel = new JLabel("用途");
 		usageInRecordLabel.setBounds(132, 50, 45, 18);
 		inputpanel2.add(usageInRecordLabel);
 		
-		usageInRecordTextField = new JTextField();
-		usageInRecordTextField.setColumns(10);
-		usageInRecordTextField.setBounds(181, 47, 50, 24);
-		inputpanel2.add(usageInRecordTextField);
+		JComboBox usageInRecordcomboBox = new JComboBox();
+		usageInRecordcomboBox.setModel(new DefaultComboBoxModel(frame.Usage.values()));
+		usageInRecordcomboBox.setBounds(181, 47, 61, 24);
+		usageInRecordcomboBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				usageInRecordcomboBoxActionPerformed(e);
+			}
+		});
+		inputpanel2.add(usageInRecordcomboBox);
 		
-        Object[][] tableDate2=new Object[0][6];
-        String[] name2={"记录单","物资号","来源仓库号","数量","时间","用途"};
-		recordSearchTable = new JTable(tableDate2,name2);
+
+		recordSearchTable = new JTable(RecordTableModel.purchaseTableModel);
 		recordSearchTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		recordSearchTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		
@@ -253,6 +281,21 @@ public class SearchFrame extends BaseFrame{
 		scrollPane2.setViewportView(recordSearchTable);
 	}
 
+	protected void usageInRecordcomboBoxActionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		switch ((Usage)((JComboBox)e.getSource()).getSelectedObjects()[0]) {
+		case PURCHASE:
+			recordSearchTable.setModel(RecordTableModel.purchaseTableModel);
+			break;
+		case TRANSFER:
+			recordSearchTable.setModel(RecordTableModel.transferTableModel);
+			break;
+		case DELIVERY:
+			recordSearchTable.setModel(RecordTableModel.deliveryTableModel);
+			break;
+		}
+	}
+
 	protected void cancelButtonActionPerformed() {
 		// TODO Auto-generated method stub
 		
@@ -260,5 +303,99 @@ public class SearchFrame extends BaseFrame{
 
 	public void setTabSeq(int index){
 		tabbedPane.setSelectedIndex(index);
+	}
+}
+
+enum Usage{
+	PURCHASE("采购"),TRANSFER("转移"),DELIVERY("出售");
+	
+	String meaning;
+	
+	private Usage(String meaning) {
+		// TODO Auto-generated constructor stub
+		this.meaning = meaning;
+	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return meaning;
+	}
+}
+
+
+class RecordTableModel extends AbstractTableModel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8762197853686994754L;
+	
+	public static final RecordTableModel purchaseTableModel = 
+			new RecordTableModel(Arrays.asList("记录号","部门号","物资号","物资名","物资数量","目的仓库号","时间"));
+
+	public static final RecordTableModel transferTableModel = 
+			new RecordTableModel(Arrays.asList("记录号","物资号","物资名","物资数量","来源仓库号","目的仓库号","时间"));
+
+	public static final RecordTableModel deliveryTableModel = 
+			new RecordTableModel(Arrays.asList("记录号","客户号","物资号","物资名","物资数量","来源仓库号","时间"));
+
+	
+	public RecordTableModel(List<String> columnNameList) {
+		// TODO Auto-generated constructor stub
+		this.columnNames = columnNameList.toArray(new String[] {});
+		this.data = new ArrayList<>();
+	}
+
+	private String[] columnNames;
+	private List<List<Object>> data;
+
+	public int getColumnCount() {
+		return columnNames.length;
+	}
+
+	public int getRowCount() {
+		return data.size();
+	}
+
+	public String getColumnName(int col) {
+		return columnNames[col];
+	}
+
+	public Object getValueAt(int row, int col) {
+		return data.get(row).get(col);
+	}
+
+	/*
+	 * JTable uses this method to determine the default renderer/ editor for each
+	 * cell. If we didn't implement this method, then the last column would contain
+	 * text ("true"/"false"), rather than a check box.
+	 */
+	public Class<?> getColumnClass(int c) {
+		return getValueAt(0, c).getClass();
+	}
+
+	/*
+	 * Don't need to implement this method unless your table's editable.
+	 */
+	public boolean isCellEditable(int row, int col) {
+//Note that the data/cell address is constant,
+//no matter where the cell appears onscreen.
+		return false;
+	}
+
+	/*
+	 * Don't need to implement this method unless your table's data can change.
+	 */
+	public void setValueAt(Object value, int row, int col) {
+		List<Object> list = data.get(row);
+		list.set(col, value);
+		fireTableCellUpdated(row, col);
+	}
+	
+	public void addRow(Object ... params) {
+		List<Object> list = new ArrayList<>(Arrays.asList(params));
+		data.add(list);
+		fireTableRowsInserted(getRowCount()-1, getRowCount()-1);
 	}
 }
