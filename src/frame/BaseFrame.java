@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class BaseFrame extends JFrame {
 
@@ -25,5 +26,14 @@ public class BaseFrame extends JFrame {
 				(screenHeight - frm_Height) / 2);		
 		
 	}
+	
+	protected void errInWindow(Exception e) {
+		JOptionPane.showMessageDialog(this, e.getMessage(),"输入反馈",JOptionPane.YES_NO_OPTION);
+	}
 
+	protected void yesMessage(String msg) {
+		JOptionPane.showMessageDialog(this, msg,"",JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	
 }

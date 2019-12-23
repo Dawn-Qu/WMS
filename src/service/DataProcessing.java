@@ -74,7 +74,7 @@ public class DataProcessing {
                 }
                 //更新记录
                 String newRNo = getNewRNo();
-                PreparedStatement insertPurchase = connection.prepareStatement("INSERT INTO purchaseinfo(RNo,DNo,DestWNo) VALUES(?,?);");
+                PreparedStatement insertPurchase = connection.prepareStatement("INSERT INTO purchaseinfo(RNo,DNo,DestWNo) VALUES(?,?,?);");
                 insertPurchase.setString(1, newRNo);
                 insertPurchase.setString(2, DNo);
                 insertPurchase.setString(3,destinyWNo);

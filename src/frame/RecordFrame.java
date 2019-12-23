@@ -22,7 +22,7 @@ public abstract class RecordFrame extends BaseFrame{
 	private static final long serialVersionUID = 5356266414968084407L;
 	protected JTable recordTable;
 	private OneRecordFrame oneRecordFrame = new OneRecordFrame(this);
-	protected RecordTableModel recordTableModel;
+	protected showTableModel recordTableModel;
 	private String[] tableNames;
 
 	protected JButton personButton;
@@ -44,8 +44,7 @@ public abstract class RecordFrame extends BaseFrame{
 		
         Container contentPane=getContentPane();
         
-        tableNames = new String[] {"物资名","数量","来源仓库号","目的仓库号"};
-        recordTableModel = new RecordTableModel(Arrays.asList(tableNames));
+        recordTableModel = showTableModel.recordTableModel;
         recordTable=new JTable(recordTableModel);
         contentPane.add(new JScrollPane(recordTable));
         
@@ -62,6 +61,14 @@ public abstract class RecordFrame extends BaseFrame{
 			}
 		});
 		buttonPanel.add(insertButton);
+		
+		JButton deleteButton = new JButton("删除");
+		deleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				deleteButtonActionPerformed();
+			}
+		});
+		buttonPanel.add(deleteButton);
 		
 		JButton cancelButton = new JButton("取消");
 		cancelButton.addActionListener(new ActionListener() {
@@ -87,6 +94,12 @@ public abstract class RecordFrame extends BaseFrame{
 	
 
 	
+	protected void deleteButtonActionPerformed() {
+		// TODO Auto-generated method stub
+		int index = recordTable.getSelectedRow();
+		delete(index);
+	}
+
 	private void insertButtonActionPerformed() {
 		oneRecordFrame.setVisible(true);
 	}
@@ -99,6 +112,10 @@ public abstract class RecordFrame extends BaseFrame{
 	
 	public void insert(Record record) {
 		recordTableModel.addRow(record.flat());
+	}
+	
+	public void delete(int index) {
+		recordTableModel.delRow(index);
 	}
 	
 }

@@ -4,12 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.EventObject;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,7 +21,13 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 
-import com.sun.tools.javac.code.Attribute.Array;
+import model.DeliveryInfo;
+import service.DataProcessing;
+import view.OrderView;
+import view.PurchaseView;
+import view.StockView;
+import view.TransferView;
+import view.WarehouseCapacityView;
 
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -60,8 +66,10 @@ public class SearchFrame extends BaseFrame{
 	private JTextField warehouseNameInGoodsTextField;
 	private JTextField warehouseNumberInGoodsTextField;
 	private JTextField goodsNumberInRecordTextField;
-	private JTextField warehouseNumberInRecordTextField;
+	private JTextField srcWarehouseNumberInRecordTextField;
+	private JTextField destWarehouseNumberInRecordTextField;
 	private JTextField timeSrcInRecordTextField,timeDestInRecordTextField;
+	private JComboBox<?> usageInRecordcomboBox;
 
 	/**
 	 * Create the application.
@@ -115,13 +123,12 @@ public class SearchFrame extends BaseFrame{
 		inputPanel.add(warehouseSearchButton);
 		warehouseSearchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cancelButtonActionPerformed();
+				warehouseSearchButtonActionPerformed();
 			}
 		});
+
 		
-		Object[][] tableDate=new Object[0][4];
-		String[] name= {"仓库号","仓库名","总容量","可用容量"};
-		warehouseSearchTable = new JTable(tableDate,name);
+		warehouseSearchTable = new JTable(showTableModel.warehouseSearchTableModel);
 		warehouseSearchTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		warehouseSearchTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		
@@ -138,9 +145,7 @@ public class SearchFrame extends BaseFrame{
 		tabbedPane.addTab("物资查询", goodsSearchPanel);
 		goodsSearchPanel.setLayout(null);
 		
-        Object[][] tableDate1=new Object[0][5];
-        String[] name1={"物资名","物资号","数量","仓库号","仓库名"};
-		goodsSearchTable = new JTable(tableDate1,name1);
+		goodsSearchTable = new JTable(showTableModel.goodsSearchTableModel);
 		goodsSearchTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		goodsSearchTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		
@@ -174,6 +179,13 @@ public class SearchFrame extends BaseFrame{
 		
 		JButton goodsSearchButton = new JButton("查询");
 		goodsSearchButton.setBounds(298, 9, 76, 27);
+		goodsSearchButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				goodsSearchButtonActionPerformed();
+			}
+		});
 		inputPanel1.add(goodsSearchButton);
 		
 		JLabel warehouseNameInGoodsLabel = new JLabel("仓库名");
@@ -215,6 +227,13 @@ public class SearchFrame extends BaseFrame{
 		
 		JButton recordSearchButton = new JButton("查询");
 		recordSearchButton.setBounds(268, 46, 76, 27);
+		recordSearchButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				recordSearchButtonActionPerformed();
+			}
+		});
 		inputpanel2.add(recordSearchButton);
 		
 		JLabel goodsNumberInRecordlabel = new JLabel("物资号");
@@ -226,14 +245,23 @@ public class SearchFrame extends BaseFrame{
 		goodsNumberInRecordTextField.setBounds(73, 47, 45, 24);
 		inputpanel2.add(goodsNumberInRecordTextField);
 		
-		JLabel warehouseNumberInRecordLabel = new JLabel("仓库号");
-		warehouseNumberInRecordLabel.setBounds(127, 16, 45, 18);
-		inputpanel2.add(warehouseNumberInRecordLabel);
+		JLabel srcWarehouseNumberInRecordLabel = new JLabel("来源");
+		srcWarehouseNumberInRecordLabel.setBounds(127, 0, 45, 25);
+		inputpanel2.add(srcWarehouseNumberInRecordLabel);
 		
-		warehouseNumberInRecordTextField = new JTextField();
-		warehouseNumberInRecordTextField.setColumns(10);
-		warehouseNumberInRecordTextField.setBounds(181, 13, 61, 24);
-		inputpanel2.add(warehouseNumberInRecordTextField);
+		srcWarehouseNumberInRecordTextField = new JTextField();
+		srcWarehouseNumberInRecordTextField.setColumns(10);
+		srcWarehouseNumberInRecordTextField.setBounds(181, 0, 61, 20);
+		inputpanel2.add(srcWarehouseNumberInRecordTextField);
+		
+		JLabel destWarehouseNumberInRecordLabel = new JLabel("目的");
+		destWarehouseNumberInRecordLabel.setBounds(127, 20, 45, 25);
+		inputpanel2.add(destWarehouseNumberInRecordLabel);
+		
+		destWarehouseNumberInRecordTextField = new JTextField();
+		destWarehouseNumberInRecordTextField.setColumns(10);
+		destWarehouseNumberInRecordTextField.setBounds(181, 20, 61, 20);
+		inputpanel2.add(destWarehouseNumberInRecordTextField);
 		
 		JLabel timeInRecordLabel = new JLabel("时间");
 		timeInRecordLabel.setBounds(245, 16, 45, 18);
@@ -257,7 +285,7 @@ public class SearchFrame extends BaseFrame{
 		usageInRecordLabel.setBounds(132, 50, 45, 18);
 		inputpanel2.add(usageInRecordLabel);
 		
-		JComboBox usageInRecordcomboBox = new JComboBox();
+		usageInRecordcomboBox = new JComboBox();
 		usageInRecordcomboBox.setModel(new DefaultComboBoxModel(frame.Usage.values()));
 		usageInRecordcomboBox.setBounds(181, 47, 61, 24);
 		usageInRecordcomboBox.addActionListener(new ActionListener() {
@@ -271,7 +299,7 @@ public class SearchFrame extends BaseFrame{
 		inputpanel2.add(usageInRecordcomboBox);
 		
 
-		recordSearchTable = new JTable(RecordTableModel.purchaseTableModel);
+		recordSearchTable = new JTable(showTableModel.purchaseRecordTableModel);
 		recordSearchTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		recordSearchTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		
@@ -281,17 +309,159 @@ public class SearchFrame extends BaseFrame{
 		scrollPane2.setViewportView(recordSearchTable);
 	}
 
+	protected void recordSearchButtonActionPerformed() {
+		// TODO Auto-generated method stub
+		String inputSrcTime = timeSrcInRecordTextField.getText();
+		String inputDestTime = timeSrcInRecordTextField.getText();
+		
+		String[] srcTime = inputSrcTime.split("\\.");
+		String[] destTime = inputDestTime.split("\\.");
+		
+		@SuppressWarnings("deprecation")
+		Timestamp srcTimestamp = new Timestamp(
+				Integer.parseInt(srcTime[0]),
+				Integer.parseInt(srcTime[1]), 
+				Integer.parseInt(srcTime[2]), 
+				0, 0, 0, 0);
+		
+		@SuppressWarnings("deprecation")
+		Timestamp destTimestamp = new Timestamp(
+				Integer.parseInt(destTime[0]),
+				Integer.parseInt(destTime[1]), 
+				Integer.parseInt(destTime[2]), 
+				0, 0, 0, 0);
+		
+		Usage usage = (Usage) usageInRecordcomboBox.getSelectedItem();
+		String gNo = goodsNumberInRecordTextField.getText();
+		String cNo = reordNumberInRecordTextField.getText();
+		String sourceWNo = srcWarehouseNumberInRecordTextField.getText();
+		String destWNo = destWarehouseNumberInRecordTextField.getText();
+		try {
+			List<?> list = DataProcessing.getRecordDetail(
+					srcTimestamp, 
+					destTimestamp, 
+					usage.toString().toCharArray(), 
+					gNo.toCharArray(), 
+					cNo.toCharArray(), 
+					sourceWNo.toCharArray(), 
+					destWNo.toCharArray());
+			switch (usage) {
+			case PURCHASE:
+				for(Object purchaseView : list) {
+					//"记录号","部门号","物资号","物资名","物资数量","目的仓库号","时间"
+					PurchaseView pView = (PurchaseView)purchaseView;
+					showTableModel.purchaseRecordTableModel
+					.addRow(new Object[] {
+							pView.getRNo(),
+							pView.getDNo(),
+							pView.getGNo(),
+							pView.getGName(),
+							pView.getAmount(),
+							pView.getSourceWNo(),
+							pView.getRTime()
+					});
+				}
+				break;
+			case TRANSFER:
+				for(Object transferView : list) {
+					//"记录号","物资号","物资名","物资数量","来源仓库号","目的仓库号","时间"
+					TransferView tView = (TransferView)transferView;
+					showTableModel.purchaseRecordTableModel
+					.addRow(new Object[] {
+							tView.getRNo(),
+							tView.getGNo(),
+							tView.getGName(),
+							tView.getAmount(),
+							tView.getAmount(),
+							tView.getSourceWNo(),
+							tView.getDestWNo(),
+							tView.getRTime()
+					});
+				}
+				break;
+			case DELIVERY:
+				for(Object orderView : list) {
+					//"记录号","客户号","物资号","物资名","物资数量","来源仓库号","时间"
+					OrderView oView = (OrderView)orderView;
+					showTableModel.purchaseRecordTableModel
+					.addRow(new Object[] {
+							oView.getRNo(),
+							oView.getClientNo(),
+							oView.getGNo0(),
+							oView.getGName(),
+							oView.getAmount(),
+							oView.getSourceWNo(),
+							oView.getRtime()
+					});
+				}
+				break;
+			default:
+				break;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			errInWindow(e);
+		}
+	}
+
+	protected void goodsSearchButtonActionPerformed() {
+		// TODO Auto-generated method stub
+//		String goodsName = goodsNameTextInGoodsField.getText();
+		String goodsNum = goodsNumberInGoodsTextField.getText();
+//		String warehouseName = warehouseNameInGoodsTextField.getText();
+		String warehouseNum = warehouseNumberInGoodsTextField.getText();
+		
+		try {
+			List<StockView> list = DataProcessing.getStockView(goodsNum, warehouseNum);
+			for(StockView stockView : list) {
+				showTableModel.goodsSearchTableModel
+				.addRow(new Object[] {
+						stockView.getGNo(),
+						stockView.getGName(),
+						stockView.getAmount(),
+						stockView.getWNo(),
+						stockView.getWName()
+				});
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			errInWindow(e);
+		}
+	}
+
+	protected void warehouseSearchButtonActionPerformed() {
+		// TODO Auto-generated method stub
+		String name = warehouseNameInWHTextField.getText();
+		String num = warehouseNameInWHTextField.getText();
+		
+		try {
+			List<WarehouseCapacityView> list = DataProcessing.getWarehouseCapacityView(name.toCharArray(), num.toCharArray());
+			for(WarehouseCapacityView warehouseCapacityView : list) {
+				showTableModel.warehouseSearchTableModel
+				.addRow(new Object[] {
+						warehouseCapacityView.getWNo(),
+						warehouseCapacityView.getWName(),
+						warehouseCapacityView.getCapacity(),
+						warehouseCapacityView.getExcessCapacity()
+				});
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			errInWindow(e);
+		}
+	}
+
 	protected void usageInRecordcomboBoxActionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		switch ((Usage)((JComboBox)e.getSource()).getSelectedObjects()[0]) {
+		switch ((Usage)((JComboBox<?>)e.getSource()).getSelectedObjects()[0]) {
 		case PURCHASE:
-			recordSearchTable.setModel(RecordTableModel.purchaseTableModel);
+			recordSearchTable.setModel(showTableModel.purchaseRecordTableModel);
 			break;
 		case TRANSFER:
-			recordSearchTable.setModel(RecordTableModel.transferTableModel);
+			recordSearchTable.setModel(showTableModel.transferRecordTableModel);
 			break;
 		case DELIVERY:
-			recordSearchTable.setModel(RecordTableModel.deliveryTableModel);
+			recordSearchTable.setModel(showTableModel.deliveryRecordTableModel);
 			break;
 		}
 	}
@@ -306,6 +476,11 @@ public class SearchFrame extends BaseFrame{
 	}
 }
 
+/**
+ * record usage
+ * @author 90946
+ *
+ */
 enum Usage{
 	PURCHASE("采购"),TRANSFER("转移"),DELIVERY("出售");
 	
@@ -323,25 +498,45 @@ enum Usage{
 	}
 }
 
-
-class RecordTableModel extends AbstractTableModel {
+/**
+ * use this class to create a local table model
+ * it defines several table model used by frame package
+ * this table model is used to show
+ * @author 90946
+ *
+ */
+class showTableModel extends AbstractTableModel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8762197853686994754L;
 	
-	public static final RecordTableModel purchaseTableModel = 
-			new RecordTableModel(Arrays.asList("记录号","部门号","物资号","物资名","物资数量","目的仓库号","时间"));
-
-	public static final RecordTableModel transferTableModel = 
-			new RecordTableModel(Arrays.asList("记录号","物资号","物资名","物资数量","来源仓库号","目的仓库号","时间"));
-
-	public static final RecordTableModel deliveryTableModel = 
-			new RecordTableModel(Arrays.asList("记录号","客户号","物资号","物资名","物资数量","来源仓库号","时间"));
-
 	
-	public RecordTableModel(List<String> columnNameList) {
+	
+	public static final showTableModel recordTableModel = 
+	new showTableModel(Arrays.asList("物资号","数量","来源仓库号","目的仓库号"));
+	
+	public static final showTableModel warehouseSearchTableModel = 
+			new showTableModel(Arrays.asList("仓库号","仓库名","总容量","可用容量"));
+	
+	public static final showTableModel goodsSearchTableModel = 
+	new showTableModel(Arrays.asList("物资号","物资名","数量","仓库号","仓库名"));
+	
+	public static final showTableModel purchaseRecordTableModel = 
+			new showTableModel(Arrays.asList("记录号","部门号","物资号","物资名","物资数量","目的仓库号","时间"));
+
+	public static final showTableModel transferRecordTableModel = 
+			new showTableModel(Arrays.asList("记录号","物资号","物资名","物资数量","来源仓库号","目的仓库号","时间"));
+
+	public static final showTableModel deliveryRecordTableModel = 
+			new showTableModel(Arrays.asList("记录号","客户号","物资号","物资名","物资数量","来源仓库号","时间"));
+
+	/**
+	 * make a empty table model by column name
+	 * @param columnNameList
+	 */
+	public showTableModel(List<String> columnNameList) {
 		// TODO Auto-generated constructor stub
 		this.columnNames = columnNameList.toArray(new String[] {});
 		this.data = new ArrayList<>();
@@ -362,6 +557,9 @@ class RecordTableModel extends AbstractTableModel {
 		return columnNames[col];
 	}
 
+	/**
+	 * get a value in (row,col)
+	 */
 	public Object getValueAt(int row, int col) {
 		return data.get(row).get(col);
 	}
@@ -387,15 +585,32 @@ class RecordTableModel extends AbstractTableModel {
 	/*
 	 * Don't need to implement this method unless your table's data can change.
 	 */
+	/**
+	 * set a value in (row,col)
+	 */
 	public void setValueAt(Object value, int row, int col) {
 		List<Object> list = data.get(row);
 		list.set(col, value);
 		fireTableCellUpdated(row, col);
 	}
 	
+	/**
+	 * insert a row to this table
+	 * @param params
+	 */
 	public void addRow(Object ... params) {
 		List<Object> list = new ArrayList<>(Arrays.asList(params));
 		data.add(list);
 		fireTableRowsInserted(getRowCount()-1, getRowCount()-1);
+	}
+	
+	/**
+	 * delete a row in the specified index
+	 * @param index
+	 */
+	public void delRow(int index) {
+		Objects.checkIndex(index, getRowCount());
+		data.remove(index);
+		fireTableRowsDeleted(index, index);
 	}
 }

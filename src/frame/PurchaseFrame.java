@@ -50,26 +50,31 @@ public class PurchaseFrame extends RecordFrame{
 	@Override
 	protected void submissionButtonaActionPerformed() {
 		// TODO Auto-generated method stub
+		String DNo = "";
+		DNo = JOptionPane.showInputDialog(this, "输入部门号");
+		
+		//
 		TableModel tableModel = recordTable.getModel();
 		int r = tableModel.getRowCount();
 		String[] GNo = new String[r];
 		int[] amount = new int[r];
-		String DNo = (String) tableModel.getValueAt(0, 3);
 		for(int i=0;i<tableModel.getRowCount();i++) {
 			GNo[i] = (String) tableModel.getValueAt(i, 0);
-			amount[i] = Integer.parseInt((String)tableModel.getValueAt(i, 1));
+			amount[i] = (int)tableModel.getValueAt(i, 1);
 		}
+		String destWNo = (String)tableModel.getValueAt(0, 3);
 		try {
-			DataProcessing.purchase(GNo, amount, "", DNo);
+			DataProcessing.purchase(GNo, amount, destWNo, DNo);
+			yesMessage("采购成功！");
 		} catch (CapacityException e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(this.getContentPane(), e.getMessage(),"出错反馈",JOptionPane.YES_NO_OPTION);
+			errInWindow(e);
 		} catch (GoodsNotFoundException e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(this.getContentPane(), e.getMessage(),"出错反馈",JOptionPane.YES_NO_OPTION);
+			errInWindow(e);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(this.getContentPane(), e.getMessage(),"出错反馈",JOptionPane.YES_NO_OPTION);
+			errInWindow(e);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

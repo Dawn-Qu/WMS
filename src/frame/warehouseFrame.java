@@ -165,6 +165,7 @@ public class warehouseFrame extends BaseFrame{
 		String number = numberTextField.getText();
 		try {
 			DataProcessing.addWarehouse(number, name, volume);
+			yesMessage("添加仓库成功！");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(this, e.getMessage(),"输入反馈",JOptionPane.YES_NO_OPTION);

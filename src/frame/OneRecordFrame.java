@@ -47,7 +47,7 @@ public class OneRecordFrame extends BaseFrame{
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(null);
 		
-		JLabel goodsLabel = new JLabel("物资名");
+		JLabel goodsLabel = new JLabel("物资号");
 		goodsLabel.setBounds(14, 13, 72, 18);
 		getContentPane().add(goodsLabel);
 		
@@ -64,19 +64,19 @@ public class OneRecordFrame extends BaseFrame{
 		getContentPane().add(destWarehouseLabel);
 		
 		srcWarehouseTextPane = new JTextPane();
-		srcWarehouseTextPane.setBounds(100, 75, 37, 18);
+		srcWarehouseTextPane.setBounds(100, 75, 70, 18);
 		getContentPane().add(srcWarehouseTextPane);
 		
 		destWarehouseTextPane = new JTextPane();
-		destWarehouseTextPane.setBounds(100, 106, 37, 18);
+		destWarehouseTextPane.setBounds(100, 106, 70, 18);
 		getContentPane().add(destWarehouseTextPane);
 		
 		numberTextPane = new JTextPane();
-		numberTextPane.setBounds(100, 44, 37, 18);
+		numberTextPane.setBounds(100, 44, 70, 18);
 		getContentPane().add(numberTextPane);
 		
 		goodsTextPane = new JTextPane();
-		goodsTextPane.setBounds(100, 13, 37, 18);
+		goodsTextPane.setBounds(100, 13, 70, 18);
 		getContentPane().add(goodsTextPane);
 		
 		JButton cancelButton = new JButton("取消");
@@ -114,10 +114,10 @@ public class OneRecordFrame extends BaseFrame{
 	}
 	
 	private Record getRecord() {
-		String name = goodsTextPane.getText();
-			int amount = Integer.parseInt(numberTextPane.getText());
-			int src = Integer.parseInt(srcWarehouseTextPane.getText());
-			int dest = Integer.parseInt(destWarehouseTextPane.getText());
+		String name = goodsTextPane.getText().trim();
+		int amount = Integer.parseInt(numberTextPane.getText());
+		String src = srcWarehouseTextPane.getText().trim();
+		String dest = destWarehouseTextPane.getText().trim();
 		return new Record(name, amount, src, dest);
 	}
 	

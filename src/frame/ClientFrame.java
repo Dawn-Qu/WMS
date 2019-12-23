@@ -104,6 +104,7 @@ public class ClientFrame extends BaseFrame{
 		String number = numberTextField.getText();
 		try {
 			DataProcessing.addClient(number, name);
+			yesMessage("添加客户成功");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(this, e.getMessage(),"输入反馈",JOptionPane.YES_NO_OPTION);

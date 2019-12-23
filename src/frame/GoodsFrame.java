@@ -6,6 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import exception.NameRepeatException;
 import service.DataProcessing;
 
 import javax.swing.JButton;
@@ -111,14 +112,23 @@ public class GoodsFrame extends BaseFrame{
 		String name = nameTextField.getText();
 		String volume = volumeTextField.getText();
 		String price = priceTextField.getText();
-//		try {
-//			DataProcessing.add(number, name);
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			JOptionPane.showMessageDialog(this, e.getMessage(),"输入反馈",JOptionPane.YES_NO_OPTION);
-//		}finally {
-//			this.dispose();
-//		}
-		this.dispose();
+		try {
+			DataProcessing.addGoods(name, Integer.parseInt(volume), Integer.parseInt(price));
+			yesMessage("添加物资成功！");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(this, e.getMessage(),"输入反馈",JOptionPane.YES_NO_OPTION);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NameRepeatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			this.dispose();
+		}
 	}
 }
