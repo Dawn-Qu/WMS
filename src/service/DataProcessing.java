@@ -1,6 +1,7 @@
 package service;
 
 import exception.*;
+import model.Goods;
 import view.*;
 
 import exception.CapacityException;
@@ -513,6 +514,21 @@ public class DataProcessing {
             new RecordNotFoundException("没有找到对应的记录");
             return null;
         }
+    }
+    public static List<Goods> getAllGoods()throws SQLException{
+        Statement statement=connection.createStatement();
+        ResultSet set=statement.executeQuery
+                ("SELECT * FROM goods;");
+        List<Goods> goodsList=new ArrayList<>();
+        while(set.next()){
+            Goods goods=new Goods();
+            goods.setGNO(set.getString("GNo").toCharArray());
+            goods.setGName(set.getString("GName").toCharArray());
+            goods.setCost(set.getInt("Cost"));
+            goods.setPrice(set.getInt("Price"));
+            goodsList.add(goods);
+        }
+        return goodsList;
     }
     public static List<WarehouseCapacityView> getWarehouseCapacityView(char[] name,char[] num) throws SQLException {
         Statement statement = connection.createStatement();
