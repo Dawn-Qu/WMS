@@ -105,8 +105,9 @@ public class LoginFrame extends BaseFrame {
 		String password=String.valueOf(passwordField.getPassword());
 		
 		try {
-			while(!DataProcessing.logIn(name, password)) {
+			if(!DataProcessing.logIn(name, password)) {
 				JOptionPane.showMessageDialog(panel, "账号或密码出错！","输入反馈",JOptionPane.YES_NO_OPTION);
+				return;
 			}
 			hideFrame();
 			MainFrame mainframe=new MainFrame();
