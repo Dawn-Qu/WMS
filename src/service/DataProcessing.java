@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataProcessing {
-    public static final String URL = "jdbc:mysql://localhost:3306/warehouse_db?serverTimezone=GMT%2B8";
+    public static final String URL = "jdbc:mysql://111.229.228.57:3306/warehouse_db?serverTimezone=GMT%2B8";
     public static final String USER = "root";
-    public static final String PASSWORD = "";
+    public static final String PASSWORD = "root";
     public static Connection connection;
     public static final String USAGE_PURCHASE="purchase";
     public static final String USAGE_TRANSFER="rearrange";

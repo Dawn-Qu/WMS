@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import service.DataProcessing;
 
@@ -126,6 +127,15 @@ public class LoginFrame extends BaseFrame {
 		//this.setVisible(false);
 	}
 
-	
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(()-> {
+			try {
+				LoginFrame window = new LoginFrame();
+				window.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+	}
 
 }
