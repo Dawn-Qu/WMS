@@ -333,11 +333,11 @@ public class SearchFrame extends BaseFrame{
 			List<?> list = DataProcessing.getRecordDetail(
 					srcTimestamp, 
 					destTimestamp, 
-					usage.toString().toCharArray(), 
-					gNo.toCharArray(), 
-					cNo.toCharArray(), 
-					sourceWNo.toCharArray(), 
-					destWNo.toCharArray());
+					usage.toString(), 
+					gNo, 
+					cNo, 
+					sourceWNo, 
+					destWNo);
 			switch (usage) {
 			case PURCHASE:
 				for(Object purchaseView : list) {
@@ -424,11 +424,11 @@ public class SearchFrame extends BaseFrame{
 
 	protected void warehouseSearchButtonActionPerformed() {
 		// TODO Auto-generated method stub
-		char[] name = (!warehouseNameInWHTextField.getText().equals(""))?
-				warehouseNameInWHTextField.getText().toCharArray():
+		String name = (!warehouseNameInWHTextField.getText().equals(""))?
+				warehouseNameInWHTextField.getText():
 					null;
-		char[] num = (!warehouseNumberInWHTextField.getText().equals(""))?
-				warehouseNumberInWHTextField.getText().toCharArray():
+		String num = (!warehouseNumberInWHTextField.getText().equals(""))?
+				warehouseNumberInWHTextField.getText():
 					null;
 		
 		try {
