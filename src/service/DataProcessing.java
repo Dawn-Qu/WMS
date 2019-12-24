@@ -559,7 +559,9 @@ public class DataProcessing {
     public static List<WarehouseCapacityView> getWarehouseCapacityView(String name,String num) throws SQLException {
         String str="select * from warehouse_capacity_view where WNo=? and WName=?";
         PreparedStatement ptmt = connection.prepareStatement(str);
+        if(!num.isEmpty())
         ptmt.setString(1,num);
+        if(!name.isEmpty())
         ptmt.setString(2,name);
         ResultSet set = ptmt.executeQuery();
         List<WarehouseCapacityView> warecapview=new ArrayList<>();
@@ -596,8 +598,10 @@ public class DataProcessing {
 
         String str="select * from stock_view where GNo=? and WNo=? order by WNo";
         PreparedStatement ptmt = connection.prepareStatement(str);
-        ptmt.setString(1,GoodsNo.toString());
-        ptmt.setString(2,WareNo.toString());
+        if(!GoodsNo.isEmpty())
+        ptmt.setString(1,GoodsNo);
+        if(!WareNo.isEmpty())
+        ptmt.setString(2,WareNo);
         ResultSet set = ptmt.executeQuery();
         List<StockView> warecapview=new ArrayList<>();
         StockView sw=null;
