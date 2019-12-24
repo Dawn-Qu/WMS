@@ -213,7 +213,7 @@ public class DataProcessing {
                     insOrUpdQuery.setString(2,destinyWNo);
                     ResultSet insOrUpdSet=insOrUpdQuery.executeQuery();
                     //如果目标仓库原本没有这种物资，插入
-                    if(insOrUpdSet.next()){
+                    if(!insOrUpdSet.next()){
                         PreparedStatement insert=connection.prepareStatement(
                                 "INSERT INTO stock(WNo,GNo,Amount) VALUES(?,?,?);"
                         );
