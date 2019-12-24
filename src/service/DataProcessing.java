@@ -26,7 +26,7 @@ public class DataProcessing {
     static {
         try {
             //1.加载驱动程序
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.jdbc.Driver");
             //2. 获得数据库连接
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (ClassNotFoundException e) {
@@ -457,20 +457,20 @@ public class DataProcessing {
         insertRecordDetail.execute();
 
     }
-    public static List getRecordDetail(Timestamp Time1,Timestamp Time2,char[] Usage,char[]gNo,char[] cNo ,char[] sourceWNo ,char[] destWNo) throws SQLException
+    public static List getRecordDetail(Timestamp Time1,Timestamp Time2,String Usage,String gNo,String cNo ,String sourceWNo ,String destWNo) throws SQLException
     {
 
         //根据时间、gno\destwno\sourcewno\destwno查询物资调转记录
         if(Usage.equals("rearrange"))
         { String str="select * from transfer_view where time (between ? and ?) and Rusage=?" +
-                " and GNo=?  and SourceWNo=? and   DestWNo=? odered by RTime";
+                " and GNo=?  and SourceWNo=? and   DestWNo=? oder by RTime";
            PreparedStatement ptmt = connection.prepareStatement(str);
            ptmt.setTimestamp(1,Time1);
            ptmt.setTimestamp(2,Time2);
-           ptmt.setString(3,Usage.toString());
-           ptmt.setString(4,gNo.toString());
-           ptmt.setString(5,sourceWNo.toString());
-           ptmt.setString(6,destWNo.toString());
+           ptmt.setString(3,Usage);
+           ptmt.setString(4,gNo);
+           ptmt.setString(5,sourceWNo);
+           ptmt.setString(6,destWNo);
             ResultSet set = ptmt.executeQuery();
             List<TransferView> tfview=new ArrayList<>();
            TransferView t=null;
@@ -489,13 +489,13 @@ public class DataProcessing {
         //根据时间、gno\clientno\sourcewno查找出售记录单
         else if(Usage.equals("sell"))
         { String str="select * from order_view where time  (between ? and ?) and Rusage=?" +
-                " and GNo=? and ClientNo=?  odered by RTime";
+                " and GNo=? and ClientNo=?  oder by RTime";
             PreparedStatement ptmt = connection.prepareStatement(str);
             ptmt.setTimestamp(1,Time1);
             ptmt.setTimestamp(2,Time2);
-            ptmt.setString(3,Usage.toString());
-            ptmt.setString(4,gNo.toString());
-            ptmt.setString(5,cNo.toString());
+            ptmt.setString(3,Usage);
+            ptmt.setString(4,gNo);
+            ptmt.setString(5,cNo);
             ResultSet set = ptmt.executeQuery();
             List<OrderView> orderview=new ArrayList<>();
             OrderView t=null;
@@ -515,7 +515,7 @@ public class DataProcessing {
         else if(Usage.equals("purchase"))
         {
             String str="select * from purchase_view where time (between ? and ?) and Rusage=?" +
-                    " and GNo=? odered by RTime";
+                    " and GNo=? oder by RTime";
             PreparedStatement ptmt = connection.prepareStatement(str);
             ptmt.setTimestamp(1,Time1);
             ptmt.setTimestamp(2,Time2);
@@ -556,11 +556,11 @@ public class DataProcessing {
         }
         return goodsList;
     }
-    public static List<WarehouseCapacityView> getWarehouseCapacityView(char[] name,char[] num) throws SQLException {
+    public static List<WarehouseCapacityView> getWarehouseCapacityView(String name,String num) throws SQLException {
         String str="select * from warehouse_capacity_view where WNo=? and WName=?";
         PreparedStatement ptmt = connection.prepareStatement(str);
-        ptmt.setString(1,num.toString());
-        ptmt.setString(2,name.toString());
+        ptmt.setString(1,num);
+        ptmt.setString(2,name);
         ResultSet set = ptmt.executeQuery();
         List<WarehouseCapacityView> warecapview=new ArrayList<>();
         WarehouseCapacityView wcp=null;
@@ -594,7 +594,7 @@ public class DataProcessing {
     }
     public static List<StockView> getStockView(String GoodsNo,String WareNo) throws SQLException {
 
-        String str="select * from stock_view where GNo=? and WNo=? ordered by WNo";
+        String str="select * from stock_view where GNo=? and WNo=? order by WNo";
         PreparedStatement ptmt = connection.prepareStatement(str);
         ptmt.setString(1,GoodsNo.toString());
         ptmt.setString(2,WareNo.toString());
