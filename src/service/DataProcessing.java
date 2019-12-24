@@ -174,7 +174,15 @@ public class DataProcessing {
                 }
             }
             else{
-                throw new Exception(destinyWNo+"仓库不存在");
+                PreparedStatement wareQuery = connection.prepareStatement("SELECT WNo FROM warehouse WHERE WNo=?;");
+                wareQuery.setString(1,sourceWNo);
+                ResultSet wareSet=storagePstmt.executeQuery();
+                if(!wareSet.next()){
+                    throw new Exception(destinyWNo + "仓库不存在");
+                }
+                else{
+                    throw new StorageException(GNo[i]+"物资数量不足");
+                }
             }
         }
         //将物资从来源仓库中调转至目的仓库中
