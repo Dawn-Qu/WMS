@@ -174,7 +174,15 @@ public class DataProcessing {
                 }
             }
             else{
-                throw new Exception(destinyWNo+"仓库不存在");
+                PreparedStatement wareQuery = connection.prepareStatement("SELECT WNo FROM warehouse WHERE WNo=?;");
+                wareQuery.setString(1,sourceWNo);
+                ResultSet wareSet=storagePstmt.executeQuery();
+                if(!wareSet.next()){
+                    throw new Exception(destinyWNo + "仓库不存在");
+                }
+                else{
+                    throw new StorageException(GNo[i]+"物资数量不足");
+                }
             }
         }
         //将物资从来源仓库中调转至目的仓库中
@@ -225,7 +233,7 @@ public class DataProcessing {
                     //如果有这种物资，更新
                     else{
                         PreparedStatement update=connection.prepareStatement(
-                                "UPDATE stock SET Amount=? WHERE WNo=? AND GNo=?;"
+                                "UPDATE stock SET Amount=Amount+? WHERE WNo=? AND GNo=?;"
                         );
                         update.setInt(1,amount[i]);
                         update.setString(2,destinyWNo);
@@ -549,7 +557,6 @@ public class DataProcessing {
         return goodsList;
     }
     public static List<WarehouseCapacityView> getWarehouseCapacityView(char[] name,char[] num) throws SQLException {
-        Statement statement = connection.createStatement();
         String str="select * from warehouse_capacity_view where WNo=? and WName=?";
         PreparedStatement ptmt = connection.prepareStatement(str);
         ptmt.setString(1,num.toString());
@@ -586,7 +593,7 @@ public class DataProcessing {
 
     }
     public static List<StockView> getStockView(String GoodsNo,String WareNo) throws SQLException {
-        Statement statement = connection.createStatement();
+
         String str="select * from stock_view where GNo=? and WNo=? ordered by WNo";
         PreparedStatement ptmt = connection.prepareStatement(str);
         ptmt.setString(1,GoodsNo.toString());
