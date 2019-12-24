@@ -22,7 +22,7 @@ public abstract class RecordFrame extends BaseFrame{
 	private static final long serialVersionUID = 5356266414968084407L;
 	protected JTable recordTable;
 	private OneRecordFrame oneRecordFrame = new OneRecordFrame(this);
-	protected showTableModel recordTableModel;
+	protected ShowTableModel recordTableModel;
 	private String[] tableNames;
 
 	protected JButton personButton;
@@ -44,7 +44,7 @@ public abstract class RecordFrame extends BaseFrame{
 		
         Container contentPane=getContentPane();
         
-        recordTableModel = showTableModel.recordTableModel;
+        recordTableModel = ShowTableModel.recordTableModel;
         recordTable=new JTable(recordTableModel);
         contentPane.add(new JScrollPane(recordTable));
         

@@ -38,4 +38,9 @@ public class Goods {
         Price = price;
     }
 
+    @Override
+    public String toString() {
+    	// TODO Auto-generated method stub
+    	return new String(GNO);
+    }
 }

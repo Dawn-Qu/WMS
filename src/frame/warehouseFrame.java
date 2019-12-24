@@ -11,12 +11,16 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import service.DataProcessing;
+import view.WarehouseCapacityView;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class warehouseFrame extends BaseFrame{
@@ -30,6 +34,8 @@ public class warehouseFrame extends BaseFrame{
 	private JTextField volumeTextField;
 	private JTabbedPane tabbedPane;
 	private JTable deleteTable;
+	
+	private ShowTableModel showTableModel = ShowTableModel.warehouseTableModel;
 
 	/**
 	 * Launch the application.
@@ -68,6 +74,13 @@ public class warehouseFrame extends BaseFrame{
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
+		tabbedPane.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				// TODO Auto-generated method stub
+				tabbedPaneAtateChanged();
+			}
+		});
 		
 		//添加仓库
 		JPanel insertPanel = new JPanel();
@@ -135,9 +148,8 @@ public class warehouseFrame extends BaseFrame{
 			}
 		});
 		
-        Object[][] tableDate=new Object[0][4];
-        String[] name={"物资名","数量","来源仓库号","目的仓库号"};
-		deleteTable = new JTable(tableDate,name);
+
+		deleteTable = new JTable(showTableModel);
 		deleteTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		deleteTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		
@@ -146,6 +158,20 @@ public class warehouseFrame extends BaseFrame{
 		deletePanel.add(scrollPane_del);
 		scrollPane_del.setViewportView(deleteTable);
 		
+	}
+
+	protected void tabbedPaneAtateChanged() {
+		// TODO Auto-generated method stub
+		switch (tabbedPane.getSelectedIndex()) {
+		case 0:
+			
+			break;
+		case 1:
+			updateDeleteInfoTotable();
+			break;
+		default:
+			break;
+		}
 	}
 
 	protected void deleteButtonActionPerformed(ActionEvent e) {
@@ -170,15 +196,25 @@ public class warehouseFrame extends BaseFrame{
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(this, e.getMessage(),"输入反馈",JOptionPane.YES_NO_OPTION);
 		}finally {
-			this.dispose();
+//			this.dispose();
 		}
 	}
 	
 	private void updateDeleteInfoTotable() {
 		try {
-		}
-		catch (Exception e) {
-			e.printStackTrace();
+			
+			List<WarehouseCapacityView> warehouseCapacityViews = DataProcessing.getAllWarehouseCapacityView();
+			warehouseCapacityViews
+			.stream()
+			.map(w -> {
+				return new Object[] {w.getWNo(),w.getWName(),w.getCapacity(),w.getExcessCapacity()};
+			})
+			.forEach(os -> {
+				showTableModel.addRow(os);
+			});
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			errInWindow(e);
 		}
 	}
 }

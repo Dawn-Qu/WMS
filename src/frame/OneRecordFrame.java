@@ -3,9 +3,16 @@ import javax.swing.JLabel;
 import javax.swing.JTextPane;
 
 import model.*;
+import service.DataProcessing;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,15 +26,17 @@ public class OneRecordFrame extends BaseFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = 4078221518513772520L;
+	private JComboBox<?> goodsComboBox;
 	private JTextPane numberTextPane;
-	private JTextPane goodsTextPane;
 	private JTextPane destWarehouseTextPane;
 	private JTextPane srcWarehouseTextPane;
-
+	private JLabel goodsNameLabel;
+	
 	private List<JTextPane> textPanes;
 	
 	RecordFrame recordFrame;
 
+	private List<Goods> goods;
 	/**
 	 * Create the application.
 	 */
@@ -36,7 +45,8 @@ public class OneRecordFrame extends BaseFrame{
 		initialize();
 		textPanes = 
 				new ArrayList<JTextPane>(
-						Arrays.asList(numberTextPane,goodsTextPane,srcWarehouseTextPane,destWarehouseTextPane));
+						Arrays.asList(numberTextPane,srcWarehouseTextPane,destWarehouseTextPane));
+		
 	}
 
 	/**
@@ -50,6 +60,10 @@ public class OneRecordFrame extends BaseFrame{
 		JLabel goodsLabel = new JLabel("物资号");
 		goodsLabel.setBounds(14, 13, 72, 18);
 		getContentPane().add(goodsLabel);
+		
+		goodsNameLabel = new JLabel("");
+		goodsNameLabel.setBounds(200, 13, 72, 18);
+		getContentPane().add(goodsNameLabel);
 		
 		JLabel numberLabel = new JLabel("数量");
 		numberLabel.setBounds(14, 44, 72, 18);
@@ -71,13 +85,22 @@ public class OneRecordFrame extends BaseFrame{
 		destWarehouseTextPane.setBounds(100, 106, 70, 18);
 		getContentPane().add(destWarehouseTextPane);
 		
+		getGoods();
+		goodsNameLabel.setText(new String(goods.get(0).getGName()));
+		goodsComboBox = new JComboBox<>(new DefaultComboBoxModel<>(goods.toArray()));
+		goodsComboBox.setBounds(100, 13, 70, 18);
+		goodsComboBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				// TODO Auto-generated method stub
+				goodsNameLabel.setText(new String(((Goods)e.getItem()).getGName()));
+			}
+		});
+		getContentPane().add(goodsComboBox);
+		
 		numberTextPane = new JTextPane();
 		numberTextPane.setBounds(100, 44, 70, 18);
 		getContentPane().add(numberTextPane);
-		
-		goodsTextPane = new JTextPane();
-		goodsTextPane.setBounds(100, 13, 70, 18);
-		getContentPane().add(goodsTextPane);
 		
 		JButton cancelButton = new JButton("取消");
 		cancelButton.setVerticalAlignment(SwingConstants.TOP);
@@ -114,7 +137,7 @@ public class OneRecordFrame extends BaseFrame{
 	}
 	
 	private Record getRecord() {
-		String name = goodsTextPane.getText().trim();
+		String name = (String)goodsComboBox.getSelectedItem();
 		int amount = Integer.parseInt(numberTextPane.getText());
 		String src = srcWarehouseTextPane.getText().trim();
 		String dest = destWarehouseTextPane.getText().trim();
@@ -124,6 +147,15 @@ public class OneRecordFrame extends BaseFrame{
 	private void clear() {
 		for(JTextPane textPane : textPanes) {
 			textPane.setText("");
+		}
+	}
+	
+	private void getGoods() {
+		try {
+			goods = DataProcessing.getAllGoods();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			errInWindow(e);
 		}
 	}
 }

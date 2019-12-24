@@ -50,38 +50,29 @@ public class TransferFrame extends RecordFrame{
 	@Override
 	protected void submissionButtonaActionPerformed() {
 		// TODO Auto-generated method stub
-		String clientNo = "";
-		while(true) {
-			try {
-				Integer.parseInt((clientNo = JOptionPane.showInputDialog(this, "输入客户号")));
-				break;
-			} catch (Exception e) {
-				// TODO: handle exception
-				if(clientNo == null)return;
-				JOptionPane.showMessageDialog(this, "请输入整数的客户号！!");
-			}
-		}
+		String ANo = JOptionPane.showInputDialog(this, "输入管理员号");
 		//
 		TableModel tableModel = recordTable.getModel();
 		int r = tableModel.getRowCount();
 		String[] GNo = new String[r];
 		int[] amount = new int[r];
 		String sourceWNo = (String) tableModel.getValueAt(0, 2);
+		String destinyWNo = (String) tableModel.getValueAt(0, 3);
 		for(int i=0;i<tableModel.getRowCount();i++) {
 			GNo[i] = (String) tableModel.getValueAt(i, 0);
-			amount[i] = Integer.parseInt((String)tableModel.getValueAt(i, 1));
+			amount[i] = (int)tableModel.getValueAt(i, 1);
 		}
 		try {
-			DataProcessing.sell(sourceWNo,clientNo,GNo,amount);
+			DataProcessing.transfer(GNo, amount, sourceWNo, destinyWNo, ANo);
 		} catch (CapacityException e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(this, e.getMessage(),"出错反馈",JOptionPane.YES_NO_OPTION);
+			errInWindow(e);
 		} catch (GoodsNotFoundException e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(this, e.getMessage(),"出错反馈",JOptionPane.YES_NO_OPTION);
+			errInWindow(e);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(this, e.getMessage(),"出错反馈",JOptionPane.YES_NO_OPTION);
+			errInWindow(e);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
