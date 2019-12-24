@@ -47,6 +47,10 @@ public class OneRecordFrame extends BaseFrame{
 				new ArrayList<JTextPane>(
 						Arrays.asList(numberTextPane,srcWarehouseTextPane,destWarehouseTextPane));
 		
+		JLabel label = new JLabel("物资名");
+		label.setBounds(237, 13, 72, 18);
+		getContentPane().add(label);
+		
 	}
 
 	/**
@@ -62,7 +66,7 @@ public class OneRecordFrame extends BaseFrame{
 		getContentPane().add(goodsLabel);
 		
 		goodsNameLabel = new JLabel("");
-		goodsNameLabel.setBounds(200, 13, 72, 18);
+		goodsNameLabel.setBounds(293, 13, 93, 18);
 		getContentPane().add(goodsNameLabel);
 		
 		JLabel numberLabel = new JLabel("数量");
@@ -88,7 +92,7 @@ public class OneRecordFrame extends BaseFrame{
 		getGoods();
 		goodsNameLabel.setText(new String(goods.get(0).getGName()));
 		goodsComboBox = new JComboBox<>(new DefaultComboBoxModel<>(goods.toArray()));
-		goodsComboBox.setBounds(100, 13, 70, 18);
+		goodsComboBox.setBounds(100, 13, 109, 18);
 		goodsComboBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -110,7 +114,7 @@ public class OneRecordFrame extends BaseFrame{
 				cancelButtonActionPerformed();
 			}
 		});
-		cancelButton.setBounds(100, 193, 63, 27);
+		cancelButton.setBounds(246, 199, 63, 27);
 		getContentPane().add(cancelButton);
 		
 		JButton submissionButton = new JButton("确定");
@@ -119,7 +123,7 @@ public class OneRecordFrame extends BaseFrame{
 				submissionButtonActionPerformed();
 			}
 		});
-		submissionButton.setBounds(240, 193, 63, 27);
+		submissionButton.setBounds(107, 199, 63, 27);
 		getContentPane().add(submissionButton);
 		
 
