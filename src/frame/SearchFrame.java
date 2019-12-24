@@ -48,7 +48,7 @@ public class SearchFrame extends BaseFrame{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					T window = new T();
+					SearchFrame window = new SearchFrame();
 					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
