@@ -1,7 +1,11 @@
 package frame;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -27,11 +31,11 @@ import view.TransferView;
 import view.WarehouseCapacityView;
 
 import javax.swing.JComboBox;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 
 public class SearchFrame extends BaseFrame{
-
-
 	/**
 	 * 
 	 */
@@ -44,7 +48,7 @@ public class SearchFrame extends BaseFrame{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					SearchFrame window = new SearchFrame();
+					T window = new T();
 					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -57,10 +61,8 @@ public class SearchFrame extends BaseFrame{
 	private JTextField warehouseNameInWHTextField;
 	private JTextField warehouseNumberInWHTextField;
 	private JTable warehouseSearchTable,goodsSearchTable,recordSearchTable;
-	private JTextField goodsNameTextInGoodsField;
 	private JTextField goodsNumberInGoodsTextField;
 	private JTextField reordNumberInRecordTextField;
-	private JTextField warehouseNameInGoodsTextField;
 	private JTextField warehouseNumberInGoodsTextField;
 	private JTextField goodsNumberInRecordTextField;
 	private JTextField srcWarehouseNumberInRecordTextField;
@@ -81,7 +83,7 @@ public class SearchFrame extends BaseFrame{
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initialize() {
 		setTitle("查询");
-		setBounds(100, 100, 449, 339);
+		setBounds(100, 100, 600, 300);
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -89,34 +91,37 @@ public class SearchFrame extends BaseFrame{
 		
 		//仓库查询
 		JPanel warehouseSearchPanel = new JPanel();
-		warehouseSearchPanel.setLayout(null);
+		warehouseSearchPanel.setLayout(new BoxLayout(warehouseSearchPanel, BoxLayout.Y_AXIS));
 		tabbedPane.add("仓库查询",warehouseSearchPanel);
 		
 		JPanel inputPanel = new JPanel();
-		inputPanel.setBounds(56, 13, 282, 71);
 		warehouseSearchPanel.add(inputPanel);
-		inputPanel.setLayout(null);
-		JLabel warehouseNameInWHLabel = new JLabel("仓库名");
-		warehouseNameInWHLabel.setBounds(14, 13, 45, 18);
-		inputPanel.add(warehouseNameInWHLabel);
+		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
 		
+		JLabel warehouseNameInWHLabel = new JLabel("仓库名");
+		JLabel warehouseNumberInWHLabel = new JLabel("仓库号");
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.add(warehouseNameInWHLabel);
+		panel.add(warehouseNumberInWHLabel);
+		inputPanel.add(panel);
 		
 		warehouseNameInWHTextField = new JTextField();
-		warehouseNameInWHTextField.setBounds(90, 10, 100, 24);
-		inputPanel.add(warehouseNameInWHTextField);
-		warehouseNameInWHTextField.setColumns(10);
-		
-		JLabel warehouseNumberInWHLabel = new JLabel("仓库号");
-		warehouseNumberInWHLabel.setBounds(14, 44, 72, 18);
-		inputPanel.add(warehouseNumberInWHLabel);
-		
+		warehouseNameInWHTextField.setMinimumSize(new Dimension(50,20));
+		warehouseNameInWHTextField.setPreferredSize(new Dimension(50,20));
+		warehouseNameInWHTextField.setMaximumSize(new Dimension(50,20));
 		warehouseNumberInWHTextField = new JTextField();
-		warehouseNumberInWHTextField.setBounds(90, 44, 100, 24);
-		inputPanel.add(warehouseNumberInWHTextField);
-		warehouseNumberInWHTextField.setColumns(10);
+		warehouseNumberInWHTextField.setMinimumSize(new Dimension(50,20));
+		warehouseNumberInWHTextField.setPreferredSize(new Dimension(50,20));
+		warehouseNumberInWHTextField.setMaximumSize(new Dimension(50,20));
+		JPanel panel2 = new JPanel();
+		panel2.setLayout(new BoxLayout(panel2, BoxLayout.Y_AXIS));
+		panel2.setSize(new Dimension(50,50));
+		panel2.add(warehouseNameInWHTextField);
+		panel2.add(warehouseNumberInWHTextField);
+		inputPanel.add(panel2);
 		
 		JButton warehouseSearchButton = new JButton("查询");
-		warehouseSearchButton.setBounds(192, 23, 76, 27);
 		inputPanel.add(warehouseSearchButton);
 		warehouseSearchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -130,7 +135,6 @@ public class SearchFrame extends BaseFrame{
 		warehouseSearchTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(14, 102, 399, 158);
 		scrollPane.setViewportView(warehouseSearchTable);
 		warehouseSearchPanel.add(scrollPane);
 
@@ -138,44 +142,36 @@ public class SearchFrame extends BaseFrame{
 		//物资查询
 		JPanel goodsSearchPanel = new JPanel();
 		tabbedPane.add("物资查询",goodsSearchPanel);
-
 		tabbedPane.addTab("物资查询", goodsSearchPanel);
-		goodsSearchPanel.setLayout(null);
-		
-		goodsSearchTable = new JTable(ShowTableModel.goodsSearchTableModel);
-		goodsSearchTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		goodsSearchTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		
-		JScrollPane scrollPane1 = new JScrollPane();
-		scrollPane1.setBounds(14, 97, 399, 158);
-		goodsSearchPanel.add(scrollPane1);
-		scrollPane1.setViewportView(goodsSearchTable);
-		
+		goodsSearchPanel.setLayout(new BoxLayout(goodsSearchPanel, BoxLayout.Y_AXIS));
+	
 		JPanel inputPanel1 = new JPanel();
-		inputPanel1.setLayout(null);
-		inputPanel1.setBounds(14, 13, 388, 71);
+		inputPanel1.setLayout(new BoxLayout(inputPanel1, BoxLayout.X_AXIS));
 		goodsSearchPanel.add(inputPanel1);
 		
-		JLabel goodsNameInGoodsLabel = new JLabel("物资名");
-		goodsNameInGoodsLabel.setBounds(14, 13, 45, 18);
-		inputPanel1.add(goodsNameInGoodsLabel);
-		
-		goodsNameTextInGoodsField = new JTextField();
-		goodsNameTextInGoodsField.setColumns(10);
-		goodsNameTextInGoodsField.setBounds(73, 10, 50, 24);
-		inputPanel1.add(goodsNameTextInGoodsField);
-		
 		JLabel goodsNumberInGoodsLabel = new JLabel("物资号");
-		goodsNumberInGoodsLabel.setBounds(14, 44, 72, 18);
-		inputPanel1.add(goodsNumberInGoodsLabel);
+		JLabel warehouseNumberInGoodsLabel = new JLabel("仓库号");
+		JPanel panel3 = new JPanel();
+		panel3.setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
+		panel3.add(goodsNumberInGoodsLabel);
+		panel3.add(warehouseNumberInGoodsLabel);
+		inputPanel1.add(panel3);
 		
 		goodsNumberInGoodsTextField = new JTextField();
-		goodsNumberInGoodsTextField.setColumns(10);
-		goodsNumberInGoodsTextField.setBounds(73, 41, 50, 24);
-		inputPanel1.add(goodsNumberInGoodsTextField);
+		goodsNumberInGoodsTextField.setMinimumSize(new Dimension(50,20));
+		goodsNumberInGoodsTextField.setPreferredSize(new Dimension(50,20));
+		goodsNumberInGoodsTextField.setMaximumSize(new Dimension(100,20));
+		warehouseNumberInGoodsTextField = new JTextField();
+		warehouseNumberInGoodsTextField.setMinimumSize(new Dimension(50,20));
+		warehouseNumberInGoodsTextField.setPreferredSize(new Dimension(50,20));
+		warehouseNumberInGoodsTextField.setMaximumSize(new Dimension(100,20));
+		JPanel panel4 = new JPanel();
+		panel4.setLayout(new BoxLayout(panel4, BoxLayout.Y_AXIS));
+		panel4.add(goodsNumberInGoodsTextField);
+		panel4.add(warehouseNumberInGoodsTextField);
+		inputPanel1.add(panel4);
 		
 		JButton goodsSearchButton = new JButton("查询");
-		goodsSearchButton.setBounds(298, 9, 76, 27);
 		goodsSearchButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -185,42 +181,88 @@ public class SearchFrame extends BaseFrame{
 		});
 		inputPanel1.add(goodsSearchButton);
 		
-		JLabel warehouseNameInGoodsLabel = new JLabel("仓库名");
-		warehouseNameInGoodsLabel.setBounds(131, 13, 45, 18);
-		inputPanel1.add(warehouseNameInGoodsLabel);
 		
-		JLabel warehouseNumberInGoodsLabel = new JLabel("仓库号");
-		warehouseNumberInGoodsLabel.setBounds(131, 44, 45, 18);
-		inputPanel1.add(warehouseNumberInGoodsLabel);
+		goodsSearchTable = new JTable(ShowTableModel.goodsSearchTableModel);
+		goodsSearchTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		goodsSearchTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		JScrollPane scrollPane1 = new JScrollPane();
+		goodsSearchPanel.add(scrollPane1);
+		scrollPane1.setViewportView(goodsSearchTable);
 		
-		warehouseNameInGoodsTextField = new JTextField();
-		warehouseNameInGoodsTextField.setColumns(10);
-		warehouseNameInGoodsTextField.setBounds(185, 10, 50, 24);
-		inputPanel1.add(warehouseNameInGoodsTextField);
-		
-		warehouseNumberInGoodsTextField = new JTextField();
-		warehouseNumberInGoodsTextField.setColumns(10);
-		warehouseNumberInGoodsTextField.setBounds(185, 41, 50, 24);
-		inputPanel1.add(warehouseNumberInGoodsTextField);
 		
 		//记录单查询
 		JPanel recordSearchPanel = new JPanel();
-		recordSearchPanel.setLayout(null);
+		recordSearchPanel.setLayout(new BoxLayout(recordSearchPanel, BoxLayout.Y_AXIS));
 		tabbedPane.addTab("记录单查询", null, recordSearchPanel, null);
 		
 		JPanel inputpanel2 = new JPanel();
-		inputpanel2.setLayout(null);
-		inputpanel2.setBounds(14, 13, 410, 71);
+		inputpanel2.setLayout(new BoxLayout(inputpanel2,BoxLayout.X_AXIS));
 		recordSearchPanel.add(inputpanel2);
 		
-		JLabel reordNumberInRecordLabel = new JLabel("记录号");
-		reordNumberInRecordLabel.setBounds(10, 16, 45, 18);
-		inputpanel2.add(reordNumberInRecordLabel);
+		//
+		JLabel goodsNumberInRecordlabel = new JLabel("物资号");
+		JLabel usageInRecordLabel = new JLabel("用途");
+		goodsNumberInRecordlabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		usageInRecordLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		JPanel panel5 = new JPanel();
+		panel5.setLayout(new GridLayout(2,0));
+		panel5.add(goodsNumberInRecordlabel);
+		panel5.add(usageInRecordLabel);
+		inputpanel2.add(panel5);
 		
-		reordNumberInRecordTextField = new JTextField();
-		reordNumberInRecordTextField.setColumns(10);
-		reordNumberInRecordTextField.setBounds(56, 13, 70, 24);
-		inputpanel2.add(reordNumberInRecordTextField);
+		//
+		
+		usageInRecordcomboBox = new JComboBox();
+		usageInRecordcomboBox.setModel(new DefaultComboBoxModel(frame.Usage.values()));
+		usageInRecordcomboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				usageInRecordcomboBoxActionPerformed(e);
+			}
+		});
+		goodsNumberInRecordTextField = new JTextField();
+		JPanel panel6 = new JPanel();
+		panel6.setLayout(new GridLayout(2,0));
+		panel6.add(goodsNumberInRecordTextField);
+		panel6.add(usageInRecordcomboBox);
+		inputpanel2.add(panel6);
+		
+		//
+		JLabel srcWarehouseNumberInRecordLabel = new JLabel("来源仓库号");
+		JLabel destWarehouseNumberInRecordLabel = new JLabel("目的仓库号");
+		JPanel panel7 = new JPanel();
+		panel7.setLayout(new GridLayout(2,0));
+		panel7.add(destWarehouseNumberInRecordLabel);
+		panel7.add(srcWarehouseNumberInRecordLabel);
+		inputpanel2.add(panel7);
+		
+		srcWarehouseNumberInRecordTextField = new JTextField();
+		destWarehouseNumberInRecordTextField = new JTextField();
+		JPanel panel8 = new JPanel();
+		panel8.setLayout(new GridLayout(2,0));
+		panel8.add(srcWarehouseNumberInRecordTextField);
+		panel8.add(destWarehouseNumberInRecordTextField);
+		inputpanel2.add(panel8);
+		
+		JLabel srcTimeInRecordLabel = new JLabel("起始时间");
+		JLabel destTimeLabel = new JLabel("结束时间");
+		JPanel panel9 = new JPanel();
+		panel9.setLayout(new GridLayout(2,0));
+		panel9.add(srcTimeInRecordLabel);
+		panel9.add(destTimeLabel);
+		inputpanel2.add(panel9);
+		
+		timeSrcInRecordTextField = new JTextField("2019-12-22");
+		timeDestInRecordTextField = new JTextField("2019-12-28");
+		JPanel panel10 = new JPanel();
+		panel10.setLayout(new GridLayout(2,0));
+		panel10.add(timeSrcInRecordTextField);
+		panel10.add(timeDestInRecordTextField);
+		inputpanel2.add(panel10);
+		
+		
+
 		
 		JButton recordSearchButton = new JButton("查询");
 		recordSearchButton.setBounds(268, 46, 76, 27);
@@ -232,68 +274,6 @@ public class SearchFrame extends BaseFrame{
 			}
 		});
 		inputpanel2.add(recordSearchButton);
-		
-		JLabel goodsNumberInRecordlabel = new JLabel("物资号");
-		goodsNumberInRecordlabel.setBounds(10, 50, 45, 18);
-		inputpanel2.add(goodsNumberInRecordlabel);
-		
-		goodsNumberInRecordTextField = new JTextField();
-		goodsNumberInRecordTextField.setColumns(10);
-		goodsNumberInRecordTextField.setBounds(56, 47, 70, 24);
-		inputpanel2.add(goodsNumberInRecordTextField);
-		
-		JLabel srcWarehouseNumberInRecordLabel = new JLabel("来源");
-		srcWarehouseNumberInRecordLabel.setBounds(127, 0, 45, 25);
-		inputpanel2.add(srcWarehouseNumberInRecordLabel);
-		
-		srcWarehouseNumberInRecordTextField = new JTextField();
-		srcWarehouseNumberInRecordTextField.setColumns(10);
-		srcWarehouseNumberInRecordTextField.setBounds(181, 0, 61, 20);
-		inputpanel2.add(srcWarehouseNumberInRecordTextField);
-		
-		JLabel destWarehouseNumberInRecordLabel = new JLabel("目的");
-		destWarehouseNumberInRecordLabel.setBounds(127, 20, 45, 25);
-		inputpanel2.add(destWarehouseNumberInRecordLabel);
-		
-		destWarehouseNumberInRecordTextField = new JTextField();
-		destWarehouseNumberInRecordTextField.setColumns(10);
-		destWarehouseNumberInRecordTextField.setBounds(181, 20, 61, 20);
-		inputpanel2.add(destWarehouseNumberInRecordTextField);
-		
-		JLabel timeInRecordLabel = new JLabel("时间");
-		timeInRecordLabel.setBounds(245, 16, 45, 18);
-		inputpanel2.add(timeInRecordLabel);
-		
-		timeSrcInRecordTextField = new JTextField("2019-12-22");
-		timeSrcInRecordTextField.setColumns(10);
-		timeSrcInRecordTextField.setBounds(270, 13, 60, 24);
-		inputpanel2.add(timeSrcInRecordTextField);
-		
-		JLabel arrowLabel = new JLabel("到");
-		arrowLabel.setBounds(330, 13, 20, 10);
-		inputpanel2.add(arrowLabel);
-		
-		timeDestInRecordTextField = new JTextField("2019-12-28");
-		timeDestInRecordTextField.setColumns(10);
-		timeDestInRecordTextField.setBounds(343, 13, 60, 24);
-		inputpanel2.add(timeDestInRecordTextField);
-		
-		JLabel usageInRecordLabel = new JLabel("用途");
-		usageInRecordLabel.setBounds(132, 50, 45, 18);
-		inputpanel2.add(usageInRecordLabel);
-		
-		usageInRecordcomboBox = new JComboBox();
-		usageInRecordcomboBox.setModel(new DefaultComboBoxModel(frame.Usage.values()));
-		usageInRecordcomboBox.setBounds(181, 47, 61, 24);
-		usageInRecordcomboBox.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				usageInRecordcomboBoxActionPerformed(e);
-			}
-		});
-		inputpanel2.add(usageInRecordcomboBox);
 		
 
 		recordSearchTable = new JTable(ShowTableModel.purchaseRecordTableModel);
@@ -485,6 +465,8 @@ public class SearchFrame extends BaseFrame{
 		tabbedPane.setSelectedIndex(index);
 	}
 }
+
+
 
 /**
  * record usage
