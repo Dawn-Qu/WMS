@@ -62,7 +62,6 @@ public class SearchFrame extends BaseFrame{
 	private JTextField warehouseNumberInWHTextField;
 	private JTable warehouseSearchTable,goodsSearchTable,recordSearchTable;
 	private JTextField goodsNumberInGoodsTextField;
-	private JTextField reordNumberInRecordTextField;
 	private JTextField warehouseNumberInGoodsTextField;
 	private JTextField goodsNumberInRecordTextField;
 	private JTextField srcWarehouseNumberInRecordTextField;
@@ -307,7 +306,6 @@ public class SearchFrame extends BaseFrame{
 		
 		Usage usage = (Usage) usageInRecordcomboBox.getSelectedItem();
 		String gNo = goodsNumberInRecordTextField.getText();
-		String cNo = reordNumberInRecordTextField.getText();
 		String sourceWNo = srcWarehouseNumberInRecordTextField.getText();
 		String destWNo = destWarehouseNumberInRecordTextField.getText();
 		try {
