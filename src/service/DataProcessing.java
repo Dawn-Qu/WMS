@@ -549,7 +549,6 @@ public class DataProcessing {
         return goodsList;
     }
     public static List<WarehouseCapacityView> getWarehouseCapacityView(char[] name,char[] num) throws SQLException {
-        Statement statement = connection.createStatement();
         String str="select * from warehouse_capacity_view where WNo=? and WName=?";
         PreparedStatement ptmt = connection.prepareStatement(str);
         ptmt.setString(1,num.toString());
@@ -586,12 +585,12 @@ public class DataProcessing {
 
     }
     public static List<StockView> getStockView(String GoodsNo,String WareNo) throws SQLException {
-        Statement statement = connection.createStatement();
+
         String str="select * from stock_view where GNo=? and WNo=? ordered by WNo";
         PreparedStatement ptmt = connection.prepareStatement(str);
         ptmt.setString(1,GoodsNo.toString());
         ptmt.setString(2,WareNo.toString());
-        ResultSet set = ptmt.executeQuery()
+        ResultSet set = ptmt.executeQuery();
         List<StockView> warecapview=new ArrayList<>();
         StockView sw=null;
         while(set.next()){
