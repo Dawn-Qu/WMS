@@ -1,12 +1,21 @@
 package frame;
 
 import java.awt.EventQueue;
-
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.JMenuBar;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
 public class MainFrame extends BaseFrame{
 	
@@ -66,8 +75,9 @@ public class MainFrame extends BaseFrame{
 	 */
 	private void initialize() {
 		setTitle("\u4ED3\u5E93\u7BA1\u7406\u7CFB\u7EDF");
-		setSize(500,300);
+		setSize(800,500);
 		movePositionToCenter();
+		setContentPane(new ImgPanel(Utils.mainFrameImgPath));
 		getContentPane().setLayout(null);
 		
 		menuBar = new JMenuBar();
@@ -199,9 +209,12 @@ public class MainFrame extends BaseFrame{
 			}
 		});
 		purchaseMenu.add(menuItem);
-		
+		//
+
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 	}
+	
+	
 	
 	protected void insertDepartmentMenuItemActionPerformed() {
 		// TODO Auto-generated method stub

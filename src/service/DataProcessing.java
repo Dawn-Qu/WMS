@@ -591,7 +591,7 @@ public class DataProcessing {
         PreparedStatement ptmt = connection.prepareStatement(str);
         ptmt.setString(1,GoodsNo.toString());
         ptmt.setString(2,WareNo.toString());
-        ResultSet set = ptmt.executeQuery()
+        ResultSet set = ptmt.executeQuery();
         List<StockView> warecapview=new ArrayList<>();
         StockView sw=null;
         while(set.next()){

@@ -65,6 +65,7 @@ public class PurchaseFrame extends RecordFrame{
 		String destWNo = (String)tableModel.getValueAt(0, 3);
 		try {
 			DataProcessing.purchase(GNo, amount, destWNo, DNo);
+			recordTableModel.clear();
 			yesMessage("采购成功！");
 		} catch (CapacityException e) {
 			// TODO Auto-generated catch block
