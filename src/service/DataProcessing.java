@@ -577,7 +577,7 @@ public class DataProcessing {
     }
     public static List<WarehouseCapacityView> getAllWarehouseCapacityView() throws SQLException {
         Statement statement = connection.createStatement();
-        String str="select * from warehouse_capacity_view ordered by WNo";
+        String str="select * from warehouse_capacity_view order by WNo";
         ResultSet set = statement.executeQuery(str);
         List<WarehouseCapacityView> warecapview=new ArrayList<>();
         WarehouseCapacityView wcp=null;

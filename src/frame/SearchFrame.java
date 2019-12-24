@@ -424,11 +424,19 @@ public class SearchFrame extends BaseFrame{
 
 	protected void warehouseSearchButtonActionPerformed() {
 		// TODO Auto-generated method stub
-		String name = warehouseNameInWHTextField.getText();
-		String num = warehouseNameInWHTextField.getText();
+		char[] name = (!warehouseNameInWHTextField.getText().equals(""))?
+				warehouseNameInWHTextField.getText().toCharArray():
+					null;
+		char[] num = (!warehouseNumberInWHTextField.getText().equals(""))?
+				warehouseNumberInWHTextField.getText().toCharArray():
+					null;
 		
 		try {
-			List<WarehouseCapacityView> list = DataProcessing.getWarehouseCapacityView(name.toCharArray(), num.toCharArray());
+			List<WarehouseCapacityView> list = DataProcessing.getWarehouseCapacityView(name, num);
+			if(list.isEmpty()) {
+				noMessage("没有查到对应的信息");
+				return;
+			}
 			for(WarehouseCapacityView warehouseCapacityView : list) {
 				ShowTableModel.warehouseSearchTableModel
 				.addRow(new Object[] {

@@ -35,5 +35,7 @@ public class BaseFrame extends JFrame {
 		JOptionPane.showMessageDialog(this, msg,"",JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	
+	protected void noMessage(String msg) {
+		JOptionPane.showMessageDialog(this, msg,"",JOptionPane.NO_OPTION);
+	}
 }
