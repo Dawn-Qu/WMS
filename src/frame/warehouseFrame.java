@@ -34,7 +34,7 @@ public class warehouseFrame extends BaseFrame{
 	private JTextField numberTextField;
 	private JTextField volumeTextField;
 	private JTabbedPane tabbedPane;
-	private JTable deleteTable;
+	private JTable lookTable;
 	
 	private ShowTableModel showTableModel = ShowTableModel.warehouseTableModel;
 
@@ -135,29 +135,19 @@ public class warehouseFrame extends BaseFrame{
 		insertPanel.add(cancelButton);
 		
 		//删除仓库
-		JPanel deletePanel = new JPanel();
-		tabbedPane.add("删除仓库",deletePanel);
+		JPanel lookPanel = new JPanel();
+		tabbedPane.add("仓库查看",lookPanel);
 
-		deletePanel.setLayout(null);
-		
-		JButton deleteButton = new JButton("删除");
-		deleteButton.setBounds(131, 173, 65, 23);
-		deletePanel.add(deleteButton);
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				deleteButtonActionPerformed(e);
-			}
-		});
-		
+		lookPanel.setLayout(null);
 
-		deleteTable = new JTable(showTableModel);
-		deleteTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		deleteTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		lookTable = new JTable(showTableModel);
+		lookTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		lookTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		
 		JScrollPane scrollPane_del = new JScrollPane();
 		scrollPane_del.setBounds(14, 0, 336, 160);
-		deletePanel.add(scrollPane_del);
-		scrollPane_del.setViewportView(deleteTable);
+		lookPanel.add(scrollPane_del);
+		scrollPane_del.setViewportView(lookTable);
 		
 	}
 
@@ -175,10 +165,6 @@ public class warehouseFrame extends BaseFrame{
 		}
 	}
 
-	protected void deleteButtonActionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	protected void cancelButtonActionPerformed() {
 		// TODO Auto-generated method stub

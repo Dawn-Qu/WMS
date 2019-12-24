@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -15,6 +18,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+
 import service.DataProcessing;
 import view.OrderView;
 import view.PurchaseView;
@@ -98,7 +102,7 @@ public class SearchFrame extends BaseFrame{
 		
 		
 		warehouseNameInWHTextField = new JTextField();
-		warehouseNameInWHTextField.setBounds(92, 10, 86, 24);
+		warehouseNameInWHTextField.setBounds(90, 10, 100, 24);
 		inputPanel.add(warehouseNameInWHTextField);
 		warehouseNameInWHTextField.setColumns(10);
 		
@@ -107,7 +111,7 @@ public class SearchFrame extends BaseFrame{
 		inputPanel.add(warehouseNumberInWHLabel);
 		
 		warehouseNumberInWHTextField = new JTextField();
-		warehouseNumberInWHTextField.setBounds(92, 41, 86, 24);
+		warehouseNumberInWHTextField.setBounds(90, 44, 100, 24);
 		inputPanel.add(warehouseNumberInWHTextField);
 		warehouseNumberInWHTextField.setColumns(10);
 		
@@ -210,12 +214,12 @@ public class SearchFrame extends BaseFrame{
 		recordSearchPanel.add(inputpanel2);
 		
 		JLabel reordNumberInRecordLabel = new JLabel("记录号");
-		reordNumberInRecordLabel.setBounds(14, 16, 45, 18);
+		reordNumberInRecordLabel.setBounds(10, 16, 45, 18);
 		inputpanel2.add(reordNumberInRecordLabel);
 		
 		reordNumberInRecordTextField = new JTextField();
 		reordNumberInRecordTextField.setColumns(10);
-		reordNumberInRecordTextField.setBounds(73, 13, 45, 24);
+		reordNumberInRecordTextField.setBounds(56, 13, 70, 24);
 		inputpanel2.add(reordNumberInRecordTextField);
 		
 		JButton recordSearchButton = new JButton("查询");
@@ -230,12 +234,12 @@ public class SearchFrame extends BaseFrame{
 		inputpanel2.add(recordSearchButton);
 		
 		JLabel goodsNumberInRecordlabel = new JLabel("物资号");
-		goodsNumberInRecordlabel.setBounds(14, 50, 45, 18);
+		goodsNumberInRecordlabel.setBounds(10, 50, 45, 18);
 		inputpanel2.add(goodsNumberInRecordlabel);
 		
 		goodsNumberInRecordTextField = new JTextField();
 		goodsNumberInRecordTextField.setColumns(10);
-		goodsNumberInRecordTextField.setBounds(73, 47, 45, 24);
+		goodsNumberInRecordTextField.setBounds(56, 47, 70, 24);
 		inputpanel2.add(goodsNumberInRecordTextField);
 		
 		JLabel srcWarehouseNumberInRecordLabel = new JLabel("来源");
@@ -260,7 +264,7 @@ public class SearchFrame extends BaseFrame{
 		timeInRecordLabel.setBounds(245, 16, 45, 18);
 		inputpanel2.add(timeInRecordLabel);
 		
-		timeSrcInRecordTextField = new JTextField("2019.7.28");
+		timeSrcInRecordTextField = new JTextField("2019-12-22");
 		timeSrcInRecordTextField.setColumns(10);
 		timeSrcInRecordTextField.setBounds(270, 13, 60, 24);
 		inputpanel2.add(timeSrcInRecordTextField);
@@ -269,7 +273,7 @@ public class SearchFrame extends BaseFrame{
 		arrowLabel.setBounds(330, 13, 20, 10);
 		inputpanel2.add(arrowLabel);
 		
-		timeDestInRecordTextField = new JTextField("2019.8.28");
+		timeDestInRecordTextField = new JTextField("2019-12-28");
 		timeDestInRecordTextField.setColumns(10);
 		timeDestInRecordTextField.setBounds(343, 13, 60, 24);
 		inputpanel2.add(timeDestInRecordTextField);
@@ -305,24 +309,21 @@ public class SearchFrame extends BaseFrame{
 	protected void recordSearchButtonActionPerformed() {
 		// TODO Auto-generated method stub
 		String inputSrcTime = timeSrcInRecordTextField.getText();
-		String inputDestTime = timeSrcInRecordTextField.getText();
+		String inputDestTime = timeDestInRecordTextField.getText();
 		
-		String[] srcTime = inputSrcTime.split("\\.");
-		String[] destTime = inputDestTime.split("\\.");
-		
-		@SuppressWarnings("deprecation")
-		Timestamp srcTimestamp = new Timestamp(
-				Integer.parseInt(srcTime[0]),
-				Integer.parseInt(srcTime[1]), 
-				Integer.parseInt(srcTime[2]), 
-				0, 0, 0, 0);
-		
-		@SuppressWarnings("deprecation")
-		Timestamp destTimestamp = new Timestamp(
-				Integer.parseInt(destTime[0]),
-				Integer.parseInt(destTime[1]), 
-				Integer.parseInt(destTime[2]), 
-				0, 0, 0, 0);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date srcDate=null;
+		Date destDate=null;
+		try {
+			srcDate = dateFormat.parse(inputSrcTime);
+			destDate = dateFormat.parse(inputDestTime);
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	
+		Timestamp srcTimestamp = new Timestamp(srcDate.getTime());
+		Timestamp destTimestamp = new Timestamp(destDate.getTime());
 		
 		Usage usage = (Usage) usageInRecordcomboBox.getSelectedItem();
 		String gNo = goodsNumberInRecordTextField.getText();
@@ -333,58 +334,64 @@ public class SearchFrame extends BaseFrame{
 			List<?> list = DataProcessing.getRecordDetail(
 					srcTimestamp, 
 					destTimestamp, 
-					usage.toString(), 
+					usage.Emeaning, 
 					gNo, 
 					cNo, 
 					sourceWNo, 
 					destWNo);
+			if(list.isEmpty()) {
+				noMessage("没有查到对应的信息");
+				return;
+			}
 			switch (usage) {
 			case PURCHASE:
+				ShowTableModel.purchaseRecordTableModel.clear();
 				for(Object purchaseView : list) {
 					//"记录号","部门号","物资号","物资名","物资数量","目的仓库号","时间"
 					PurchaseView pView = (PurchaseView)purchaseView;
 					ShowTableModel.purchaseRecordTableModel
 					.addRow(new Object[] {
-							pView.getRNo(),
-							pView.getDNo(),
-							pView.getGNo(),
-							pView.getGName(),
+							new String(pView.getRNo()),
+							new String(pView.getDNo()),
+							new String(pView.getGNo()),
+							new String(pView.getGName()),
 							pView.getAmount(),
-							pView.getSourceWNo(),
+							new String(pView.getDestWNo()),
 							pView.getRTime()
 					});
 				}
 				break;
 			case TRANSFER:
+				ShowTableModel.transferRecordTableModel.clear();
 				for(Object transferView : list) {
 					//"记录号","物资号","物资名","物资数量","来源仓库号","目的仓库号","时间"
 					TransferView tView = (TransferView)transferView;
-					ShowTableModel.purchaseRecordTableModel
+					ShowTableModel.transferRecordTableModel
 					.addRow(new Object[] {
-							tView.getRNo(),
-							tView.getGNo(),
-							tView.getGName(),
+							new String(tView.getRNo()),
+							new String(tView.getGNo()),
+							new String(tView.getGName()),
 							tView.getAmount(),
-							tView.getAmount(),
-							tView.getSourceWNo(),
-							tView.getDestWNo(),
+							new String(tView.getSourceWNo()),
+							new String(tView.getDestWNo()),
 							tView.getRTime()
 					});
 				}
 				break;
 			case DELIVERY:
+				ShowTableModel.deliveryRecordTableModel.clear();
 				for(Object orderView : list) {
 					//"记录号","客户号","物资号","物资名","物资数量","来源仓库号","时间"
 					OrderView oView = (OrderView)orderView;
-					ShowTableModel.purchaseRecordTableModel
+					ShowTableModel.deliveryRecordTableModel
 					.addRow(new Object[] {
-							oView.getRNo(),
-							oView.getClientNo(),
-							oView.getGNo0(),
-							oView.getGName(),
+							new String(oView.getRNo()),
+							new String(oView.getClientNo()),
+							new String(oView.getGNo0()),
+							new String(oView.getGName()),
 							oView.getAmount(),
-							oView.getSourceWNo(),
-							oView.getRtime()
+							new String(oView.getSourceWNo()),
+							oView.getRtime().toString()
 					});
 				}
 				break;
@@ -406,14 +413,19 @@ public class SearchFrame extends BaseFrame{
 		
 		try {
 			List<StockView> list = DataProcessing.getStockView(goodsNum, warehouseNum);
+			if(list.isEmpty()) {
+				noMessage("没有查到对应的信息");
+				return;
+			}
+			ShowTableModel.goodsSearchTableModel.clear();
 			for(StockView stockView : list) {
 				ShowTableModel.goodsSearchTableModel
 				.addRow(new Object[] {
-						stockView.getGNo(),
-						stockView.getGName(),
+						new String(stockView.getGNo()),
+						new String(stockView.getGName()),
 						stockView.getAmount(),
-						stockView.getWNo(),
-						stockView.getWName()
+						new String(stockView.getWNo()),
+						new String(stockView.getWName())
 				});
 			}
 		} catch (SQLException e) {
@@ -424,12 +436,8 @@ public class SearchFrame extends BaseFrame{
 
 	protected void warehouseSearchButtonActionPerformed() {
 		// TODO Auto-generated method stub
-		String name = (!warehouseNameInWHTextField.getText().equals(""))?
-				warehouseNameInWHTextField.getText():
-					null;
-		String num = (!warehouseNumberInWHTextField.getText().equals(""))?
-				warehouseNumberInWHTextField.getText():
-					null;
+		String name = warehouseNameInWHTextField.getText();
+		String num = warehouseNumberInWHTextField.getText();
 		
 		try {
 			List<WarehouseCapacityView> list = DataProcessing.getWarehouseCapacityView(name, num);
@@ -437,11 +445,12 @@ public class SearchFrame extends BaseFrame{
 				noMessage("没有查到对应的信息");
 				return;
 			}
+			ShowTableModel.goodsSearchTableModel.clear();
 			for(WarehouseCapacityView warehouseCapacityView : list) {
 				ShowTableModel.warehouseSearchTableModel
 				.addRow(new Object[] {
-						warehouseCapacityView.getWNo(),
-						warehouseCapacityView.getWName(),
+						new String(warehouseCapacityView.getWNo()),
+						new String(warehouseCapacityView.getWName()),
 						warehouseCapacityView.getCapacity(),
 						warehouseCapacityView.getExcessCapacity()
 				});
@@ -483,13 +492,17 @@ public class SearchFrame extends BaseFrame{
  *
  */
 enum Usage{
-	PURCHASE("采购"),TRANSFER("转移"),DELIVERY("出售");
+	PURCHASE("采购",DataProcessing.USAGE_PURCHASE),
+	TRANSFER("转移",DataProcessing.USAGE_TRANSFER),
+	DELIVERY("出售",DataProcessing.USAGE_SELL);
 	
 	String meaning;
+	String Emeaning;
 	
-	private Usage(String meaning) {
+	private Usage(String meaning,String eMeaning) {
 		// TODO Auto-generated constructor stub
 		this.meaning = meaning;
+		this.Emeaning = eMeaning;
 	}
 	
 	@Override

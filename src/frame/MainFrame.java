@@ -44,7 +44,7 @@ public class MainFrame extends BaseFrame{
 	private JMenu goodsManegementMenu;
 	private JMenu warehouseManegementMenu;
 	private JMenuItem insertWarehouseMenuItem;
-	private JMenuItem deleteWarehhouseMenuItem;
+	private JMenuItem lookWarehhouseMenuItem;
 	private JMenuItem InsertGoodsMenuItem;
 
 	/**
@@ -81,7 +81,7 @@ public class MainFrame extends BaseFrame{
 		getContentPane().setLayout(null);
 		
 		menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 210, 26);
+		menuBar.setBounds(0, 0, 220, 30);
 		getContentPane().add(menuBar);
 		
 		transferMenu = new JMenu("\u7269\u8D44\u6D41\u901A");
@@ -161,13 +161,13 @@ public class MainFrame extends BaseFrame{
 		});
 		warehouseManegementMenu.add(insertWarehouseMenuItem);
 		
-		deleteWarehhouseMenuItem = new JMenuItem("\u5220\u9664\u4ED3\u5E93");
-		deleteWarehhouseMenuItem.addActionListener(new ActionListener() {
+		lookWarehhouseMenuItem = new JMenuItem("查看仓库");
+		lookWarehhouseMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				deleteWarehhouseMenuItemActionPerformed();
 			}
 		});
-		warehouseManegementMenu.add(deleteWarehhouseMenuItem);
+		warehouseManegementMenu.add(lookWarehhouseMenuItem);
 		
 		JMenu adminManegementMenu = new JMenu("管理员管理");
 		manegementMenu.add(adminManegementMenu);

@@ -459,18 +459,22 @@ public class DataProcessing {
     }
     public static List getRecordDetail(Timestamp Time1,Timestamp Time2,String Usage,String gNo,String cNo ,String sourceWNo ,String destWNo) throws SQLException
     {
-
+    	Usage = Usage.equals("")?"%":Usage;
+    	gNo = gNo.equals("")?"%":gNo;
+    	sourceWNo = sourceWNo.equals("")?"%":sourceWNo;
+    	destWNo = destWNo.equals("")?"%":destWNo;
+    	cNo = cNo.equals("")?"%":cNo;
+    	
         //根据时间、gno\destwno\sourcewno\destwno查询物资调转记录
         if(Usage.equals("rearrange"))
-        { String str="select * from transfer_view where (time between ? and ?) and Rusage=?" +
-                " and GNo=?  and SourceWNo=? and   DestWNo=? oder by RTime";
+        { String str="select * from transfer_view where (RTime between ? and ?) " +
+                " and GNo like ?  and SourceWNo like ? and   DestWNo like ? order by RTime";
            PreparedStatement ptmt = connection.prepareStatement(str);
            ptmt.setTimestamp(1,Time1);
            ptmt.setTimestamp(2,Time2);
-           ptmt.setString(3,Usage);
-           ptmt.setString(4,gNo);
-           ptmt.setString(5,sourceWNo);
-           ptmt.setString(6,destWNo);
+           ptmt.setString(3,gNo);
+           ptmt.setString(4,sourceWNo);
+           ptmt.setString(5,destWNo);
             ResultSet set = ptmt.executeQuery();
             List<TransferView> tfview=new ArrayList<>();
            TransferView t=null;
@@ -488,14 +492,15 @@ public class DataProcessing {
         }
         //根据时间、gno\clientno\sourcewno查找出售记录单
         else if(Usage.equals("sell"))
-        { String str="select * from order_view where (time  between ? and ?) and Rusage=?" +
-                " and GNo=? and ClientNo=?  oder by RTime";
+        { String str="select * from order_view where (RTime  between ? and ?) " +
+                " and GNo like ? and ClientNo like ? and  order by RTime";
             PreparedStatement ptmt = connection.prepareStatement(str);
+           
             ptmt.setTimestamp(1,Time1);
-            ptmt.setTimestamp(2,Time2);
-            ptmt.setString(3,Usage);
-            ptmt.setString(4,gNo);
-            ptmt.setString(5,cNo);
+            ptmt.setTimestamp(2,Time2);          
+            ptmt.setString(3,gNo);
+            ptmt.setString(4,cNo);
+            
             ResultSet set = ptmt.executeQuery();
             List<OrderView> orderview=new ArrayList<>();
             OrderView t=null;
@@ -514,13 +519,14 @@ public class DataProcessing {
         //根据gno\time查采购记录
         else if(Usage.equals("purchase"))
         {
-            String str="select * from purchase_view where (time between ? and ?) and Rusage=?" +
-                    " and GNo=? oder by RTime";
+            String str="select * from purchase_view where (RTime between ? and ?) " +
+                    " and GNo like ?  order by RTime";
             PreparedStatement ptmt = connection.prepareStatement(str);
+           
             ptmt.setTimestamp(1,Time1);
             ptmt.setTimestamp(2,Time2);
-            ptmt.setString(3,Usage.toString());
-            ptmt.setString(4,gNo.toString());
+            ptmt.setString(3,gNo);
+            
             ResultSet set = ptmt.executeQuery();
             List<PurchaseView> pview=new ArrayList<>();
             PurchaseView t=null;
@@ -530,8 +536,9 @@ public class DataProcessing {
                 t.setGNo(set.getString("GNo").toCharArray());
                 t.setRNo(set.getString("RNo").toCharArray());
                 t.setRTime(set.getTimestamp("RTime"));
-                t.setSourceWNo(set.getString("SourceWNo").toCharArray());
+                t.setDestWNo(set.getString("DestWNo").toCharArray());
                 t.setAmount(set.getInt("Amount"));
+                t.setDNo(set.getString("DNo").toCharArray());
                 pview.add(t);
             }
             return  pview;
@@ -557,12 +564,15 @@ public class DataProcessing {
         return goodsList;
     }
     public static List<WarehouseCapacityView> getWarehouseCapacityView(String name,String num) throws SQLException {
-        String str="select * from warehouse_capacity_view where WNo=? and WName=?";
+    	name = name.equals("")?"%":name;
+    	num = num.equals("")?"%":num;
+    	
+        String str="select * from warehouse_capacity_view where WNo like ? and WName like ?";
         PreparedStatement ptmt = connection.prepareStatement(str);
-        if(!num.isEmpty())
-        ptmt.setString(1,num);
-        if(!name.isEmpty())
-        ptmt.setString(2,name);
+        
+    	ptmt.setString(1,num);
+    	ptmt.setString(2,name);
+    	
         ResultSet set = ptmt.executeQuery();
         List<WarehouseCapacityView> warecapview=new ArrayList<>();
         WarehouseCapacityView wcp=null;
@@ -596,12 +606,15 @@ public class DataProcessing {
     }
     public static List<StockView> getStockView(String GoodsNo,String WareNo) throws SQLException {
 
-        String str="select * from stock_view where GNo=? and WNo=? order by WNo";
+    	GoodsNo = GoodsNo.equals("")?"%":GoodsNo;
+    	WareNo = WareNo.equals("")?"%":WareNo;
+    	
+        String str="select * from stock_view where GNo like ? and WNo like ? order by WNo";
         PreparedStatement ptmt = connection.prepareStatement(str);
-        if(!GoodsNo.isEmpty())
+
         ptmt.setString(1,GoodsNo);
-        if(!WareNo.isEmpty())
         ptmt.setString(2,WareNo);
+        
         ResultSet set = ptmt.executeQuery();
         List<StockView> warecapview=new ArrayList<>();
         StockView sw=null;

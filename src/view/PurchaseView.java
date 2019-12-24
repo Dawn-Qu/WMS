@@ -7,7 +7,7 @@ public class PurchaseView {
     private char[]DNo=new char[3];
     private char[]GNo=new char[8];
     private char[]GName=new char[15];
-    private char[]SourceWNo=new char[3];
+    private char[]DestWNo=new char[3];
     private int Amount=0;
     private Timestamp RTime;
 
@@ -47,12 +47,12 @@ public class PurchaseView {
         Amount = amount;
     }
 
-    public char[] getSourceWNo() {
-        return SourceWNo;
+    public char[] getDestWNo() {
+        return DestWNo;
     }
 
-    public void setSourceWNo(char[] sourceWNo) {
-        SourceWNo = sourceWNo;
+    public void setDestWNo(char[] DestWNo) {
+        this.DestWNo = DestWNo;
     }
 
     public void setGName(char[] GName) {
