@@ -20,6 +20,7 @@ import view.WarehouseCapacityView;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.awt.event.ActionEvent;
 
@@ -202,12 +203,12 @@ public class warehouseFrame extends BaseFrame{
 	
 	private void updateDeleteInfoTotable() {
 		try {
-			
+			showTableModel.clear();
 			List<WarehouseCapacityView> warehouseCapacityViews = DataProcessing.getAllWarehouseCapacityView();
 			warehouseCapacityViews
 			.stream()
 			.map(w -> {
-				return new Object[] {w.getWNo(),w.getWName(),w.getCapacity(),w.getExcessCapacity()};
+				return new Object[] {new String(w.getWNo()),new String(w.getWName()),w.getCapacity(),w.getExcessCapacity()};
 			})
 			.forEach(os -> {
 				showTableModel.addRow(os);
