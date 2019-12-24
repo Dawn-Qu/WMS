@@ -1,6 +1,7 @@
 package frame;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -33,24 +34,16 @@ public class LoginFrame extends BaseFrame {
 		setTitle("仓库管理系统登录");
 		
 		setSize(380, 200);
-		Toolkit toolkit = getToolkit();                    // 获得Toolkit对象
-		Dimension dimension = toolkit.getScreenSize();     // 获得Dimension对象
-		int screenHeight = dimension.height;               // 获得屏幕的高度
-		int screenWidth = dimension.width;                 // 获得屏幕的宽度
-		int frm_Height = this.getHeight();                 // 获得窗体的高度
-		int frm_width = this.getWidth();                   // 获得窗体的宽度
-		this.setLocation((screenWidth - frm_width) / 2,
-				(screenHeight - frm_Height) / 2);          // 使用窗体居中显示
-		setAlwaysOnTop(true);
-		
+		movePositionToCenter();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				
-		panel = new JPanel();
+		panel = new ImgPanel(Utils.loginFrameImgPath);
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
 		jLabel1 = new JLabel();
 		jLabel1.setText("用户名");
+		jLabel1.setForeground(Color.RED);
 		jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
 		jLabel1.setHorizontalTextPosition(SwingConstants.CENTER);
 		jLabel1.setBounds(new Rectangle(82, 31, 60, 20));		
@@ -65,6 +58,7 @@ public class LoginFrame extends BaseFrame {
 		jLabel2.setBounds(new Rectangle(82, 64, 60, 20));
 		jLabel2.setHorizontalAlignment(SwingConstants.CENTER);
 		jLabel2.setHorizontalTextPosition(SwingConstants.CENTER);
+		jLabel2.setForeground(Color.RED);
 		jLabel2.setText("密码");
 		panel.add(jLabel2);		
 		

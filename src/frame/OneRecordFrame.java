@@ -137,11 +137,11 @@ public class OneRecordFrame extends BaseFrame{
 	}
 	
 	private Record getRecord() {
-		String name = (String)goodsComboBox.getSelectedItem();
+		String num = new String(((Goods)goodsComboBox.getSelectedItem()).getGNO());
 		int amount = Integer.parseInt(numberTextPane.getText());
 		String src = srcWarehouseTextPane.getText().trim();
 		String dest = destWarehouseTextPane.getText().trim();
-		return new Record(name, amount, src, dest);
+		return new Record(num, amount, src, dest);
 	}
 	
 	private void clear() {

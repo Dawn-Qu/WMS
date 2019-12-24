@@ -64,6 +64,8 @@ public class TransferFrame extends RecordFrame{
 		}
 		try {
 			DataProcessing.transfer(GNo, amount, sourceWNo, destinyWNo, ANo);
+			recordTableModel.clear();
+			yesMessage("物资调转成功");
 		} catch (CapacityException e) {
 			// TODO Auto-generated catch block
 			errInWindow(e);

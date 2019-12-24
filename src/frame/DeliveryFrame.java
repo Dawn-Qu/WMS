@@ -66,6 +66,8 @@ public class DeliveryFrame extends RecordFrame{
 		}
 		try {
 			DataProcessing.sell(sourceWNo, clientNo, GNo, amount);
+			recordTableModel.clear();
+			yesMessage("出售成功！");
 		} catch (CapacityException e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(this, e.getMessage(),"出错反馈",JOptionPane.YES_NO_OPTION);
