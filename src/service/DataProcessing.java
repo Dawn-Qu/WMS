@@ -462,7 +462,7 @@ public class DataProcessing {
 
         //根据时间、gno\destwno\sourcewno\destwno查询物资调转记录
         if(Usage.equals("rearrange"))
-        { String str="select * from transfer_view where time (between ? and ?) and Rusage=?" +
+        { String str="select * from transfer_view where (time between ? and ?) and Rusage=?" +
                 " and GNo=?  and SourceWNo=? and   DestWNo=? oder by RTime";
            PreparedStatement ptmt = connection.prepareStatement(str);
            ptmt.setTimestamp(1,Time1);
@@ -488,7 +488,7 @@ public class DataProcessing {
         }
         //根据时间、gno\clientno\sourcewno查找出售记录单
         else if(Usage.equals("sell"))
-        { String str="select * from order_view where time  (between ? and ?) and Rusage=?" +
+        { String str="select * from order_view where (time  between ? and ?) and Rusage=?" +
                 " and GNo=? and ClientNo=?  oder by RTime";
             PreparedStatement ptmt = connection.prepareStatement(str);
             ptmt.setTimestamp(1,Time1);
@@ -514,7 +514,7 @@ public class DataProcessing {
         //根据gno\time查采购记录
         else if(Usage.equals("purchase"))
         {
-            String str="select * from purchase_view where time (between ? and ?) and Rusage=?" +
+            String str="select * from purchase_view where (time between ? and ?) and Rusage=?" +
                     " and GNo=? oder by RTime";
             PreparedStatement ptmt = connection.prepareStatement(str);
             ptmt.setTimestamp(1,Time1);
