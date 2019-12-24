@@ -225,7 +225,7 @@ public class DataProcessing {
                     //如果有这种物资，更新
                     else{
                         PreparedStatement update=connection.prepareStatement(
-                                "UPDATE stock SET Amount=? WHERE WNo=? AND GNo=?;"
+                                "UPDATE stock SET Amount=Amount+? WHERE WNo=? AND GNo=?;"
                         );
                         update.setInt(1,amount[i]);
                         update.setString(2,destinyWNo);
