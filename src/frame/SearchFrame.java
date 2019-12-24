@@ -306,6 +306,7 @@ public class SearchFrame extends BaseFrame{
 		
 		Usage usage = (Usage) usageInRecordcomboBox.getSelectedItem();
 		String gNo = goodsNumberInRecordTextField.getText();
+		String cNo = "";
 		String sourceWNo = srcWarehouseNumberInRecordTextField.getText();
 		String destWNo = destWarehouseNumberInRecordTextField.getText();
 		try {
